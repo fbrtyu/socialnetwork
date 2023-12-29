@@ -1,0 +1,97 @@
+<html>
+<style>
+    #videoObjectHtml5ApiServer1 {
+        width: 640px;
+        height: 360px;
+        background: #666;
+    }
+</style>
+
+<body>
+    <!-- Создание видео элементов и кнопки начала трансляции -->
+    <video autoplay id="videoObjectHtml5ApiServer1"></video>
+    <button id="b1" onclick="StartStream()">Начать</button>
+
+    <script type="text/javascript">
+        //Сокет для видео
+        let socketVideo = new WebSocket("ws:localhost:8090/video");
+
+        socketVideo.onopen = function (e) {
+            alert("[open] Соединение установлено");
+            alert("Отправляем данные на сервер");
+        };
+
+        socketVideo.onclose = function (event) {
+            if (event.wasClean) {
+                alert(`[close] Соединение закрыто чисто, код=${event.code} причина=${event.reason}`);
+            } else {
+                alert('[close] Соединение прервано');
+            }
+        };
+
+        socketVideo.onerror = function (error) {
+            alert(`[error] ${error.message}`);
+        };
+
+        //Тут можно написать различные действия после получения сообщения и его парсинга
+        socketVideo.onmessage = async function (event) {
+            var a = await JSON.parse(event.data, function (key, value) {
+                if (key == 'type') {
+                    return new String(value);
+                }
+                return value;
+            });
+        };
+
+        //Структура для передачи видео
+        var videoD = {
+            data: "data"
+        }
+
+        //Переменные для передачи видео
+        let base64Data;
+        let base64;
+        let base64Response;
+        let blob;
+
+        //Переменные плееров
+        var video1 = document.getElementById('videoObjectHtml5ApiServer1'); //Просто превью
+
+        //webrtc. Получение данных с вебки и дублирование их в 1-ый плеер
+        function StartStream() {
+            if (navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ video: true, audio: false }).then(function (stream) {
+                    video1.srcObject = stream;
+
+                    //Параметры качества записи с вебки
+                    var recorderOptions = {
+                        mimeType: 'video/webm; codecs=vp8',
+                        videoBitsPerSecond: 1 * 1000 * 1024 * 8,
+                    };
+
+                    var mediaRecorder = new MediaRecorder(stream, recorderOptions)
+
+                    //Тут происходит получение Blob данных при записи
+                    //Чтение этих Blob данных, конвертирование в Base64, чтобы их как строку передать по вебсокету
+                    //И собственно их отправка в вебсокет
+                    mediaRecorder.ondataavailable = function (e) {
+                        if (e.data && e.data.size > 0) {
+                            var reader2 = new FileReader();
+                            reader2.onload = function (evt) {
+                                videoD.data = evt.target.result;
+                            };
+                            reader2.readAsDataURL(e.data);
+                            socketVideo.send(JSON.stringify(videoD));
+                        }
+                    }
+
+                    //Каждые 2 сек происходит запись и отправка
+                    mediaRecorder.start(250);
+
+                }).catch(function (err) { console.log(err); });
+            }
+        }
+    </script>
+</body>
+
+</html>
