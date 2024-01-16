@@ -41,10 +41,7 @@ const Auth = observer(() => {
         {
             alert(e.response.data.message)
         }
-
-
     }
-
     return (
         <div
             className={"d-flex justify-content-center align-items-center"}

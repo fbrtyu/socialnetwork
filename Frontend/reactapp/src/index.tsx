@@ -4,6 +4,7 @@ import './index.css';
 import App from './App';
 // import reportWebVitals from './reportWebVitals';
 import UserStore from "./storage/UserStorage";
+import MessengerStorage from "./storage/MessengerStorage";
 
 export const Context:React.Context<any> = createContext(null)
 const root = ReactDOM.createRoot(
@@ -13,6 +14,7 @@ root.render(
 
       <Context.Provider value={{
           user: new UserStore(),
+          messenger: new MessengerStorage()
       }}>
           <App />
       </Context.Provider>
