@@ -3,7 +3,7 @@ const dotenv = require("dotenv")
 dotenv.config()
 
 //Пока просто тестовая функция для выполнения INSERT в БД
-const pgsendmessage = async () => {
+const pgsendmessage = async (data) => {
     try {
         const client = new Client({
             user: process.env.PGUSER,
@@ -16,8 +16,8 @@ const pgsendmessage = async () => {
         await client.connect()
 
         const query = {
-            text: 'INSERT INTO userinfo(id, firstname, lastname, bday, country) VALUES($1, $2, $3, $4, $5)',
-            values: [3, 'Name1', 'Name2', '2001-01-02', 'qwerty'],
+            text: 'INSERT INTO message(groupid, usersenderid, createdate, updatedate, text) VALUES($1, $2, $3, $4, $5)',
+            values: [data.groupid, data.usersenderid, data.createdate, data.updatedate, data.data],
         }
         const res = await client.query(query)
         console.log(res.rows[0])
@@ -27,4 +27,33 @@ const pgsendmessage = async () => {
     }
 }
 
+//Функция получения всех сообщений из БД по groupid
+const pggetmessage = async (groupid) => {
+    try {
+        const client = new Client({
+            user: process.env.PGUSER,
+            host: process.env.PGHOST,
+            database: process.env.PGDATABASE,
+            password: process.env.PGPASSWORD,
+            port: process.env.PGPORT
+        })
+
+        await client.connect()
+
+        const query = {
+            text: 'SELECT * FROM message WHERE groupid = $1',
+            values: [groupid],
+        }
+        const res = await client.query(query)
+        await client.end()
+        let a = res.rows
+        console.log(a)
+        return a
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 module.exports.pgsendmessage = pgsendmessage;
+
+module.exports.pggetmessage = pggetmessage;

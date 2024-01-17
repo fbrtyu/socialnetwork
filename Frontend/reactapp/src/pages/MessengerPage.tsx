@@ -17,13 +17,22 @@ function wsSendPing() {
     WS.send(JSON.stringify({ action: 'PING' }));
 };
 
+//Функция для получения новых сообщений из БД по groupid
+async function getmess(groupid: any) {
+    const response = await fetch(`http://localhost:8080/getmessages?groupid=${groupid}`);
+    const mess = await response.json();
+    console.log(mess);
+  }
+
 const MessengerPage = observer(() => {
+    //Получение новых сообщений из БД
+    getmess(1);
 
     //Функция для отправки сообщения в Вебсокет
     function wsSendEcho() {
         let text = textMessage;
-        //let text = document.getElementById("mess")?.textContent;
-        WS.send(JSON.stringify({ action: 'ECHO', data: text }));
+        //Пока такие данные, их надо будет хранить у клиента и получать из переменных
+        WS.send(JSON.stringify({ action: 'ECHO', data: text, groupid: 1, usersenderid: 1, createdate: "01.01.2001", updatedate: "01.01.2001" }));
     };
 
     const { user, messenger } = useContext(Context)

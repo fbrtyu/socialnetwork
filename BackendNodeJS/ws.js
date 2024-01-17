@@ -1,3 +1,5 @@
+var pg = require("./pg.js");
+
 function ws() {
     const WebSocket = require('ws');
     const wsServer = new WebSocket.Server({ port: 9000 });
@@ -21,6 +23,8 @@ function ws() {
                 switch (jsonMessage.action) {
                     case 'ECHO':
                         wsClient.send(jsonMessage.data);
+                        //Выполнение функции, которая отправляет запрос в БД
+                        pg.pgsendmessage(jsonMessage);
                         break;
                     case 'PING':
                         setTimeout(function () {
