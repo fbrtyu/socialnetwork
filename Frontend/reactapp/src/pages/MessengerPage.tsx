@@ -22,7 +22,7 @@ async function getmess(groupid: any) {
     const response = await fetch(`http://localhost:8080/getmessages?groupid=${groupid}`);
     const mess = await response.json();
     console.log(mess);
-  }
+}
 
 const MessengerPage = observer(() => {
     //Получение новых сообщений из БД
