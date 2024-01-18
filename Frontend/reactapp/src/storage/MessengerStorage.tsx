@@ -3,7 +3,7 @@ import {makeAutoObservable} from "mobx";
 
 export default class MessengerStorage{
     _dialogs: {dialogId: string, dialogName: string|null, dialogImage: string| null, users: {userId: string, fN: string, image: string|null}[]}[];
-    _dialogMessages: {messageId: string|null, files: string|null, text: string|null, userId: string, date: number|null}[];
+    _dialogMessages: {messageId: string|null, files: string|null, text: string|null, userSenderId: string, createDate: any|null, updateDate: any|null}[]|null;
     _selectedDialog: {dialogId: string, dialogName: string}|null
     constructor() {
         this._dialogs = [
@@ -38,13 +38,13 @@ export default class MessengerStorage{
     setDialogs(dialogs: []) {
         this._dialogs = dialogs
     }
-    setDialogMessages(messages: []) {
+    setDialogMessages(messages: {messageId: string|null, files: string|null, text: string|null, userSenderId: string, createDate :any|null, updateDate: any|null}[]) {
         this._dialogMessages = messages
     }
-    pushDialogMessages(message:{messageId: string|null, files: string|null, text: string|null, userId: string, date: number|null})
-    {
-        this._dialogMessages.push(message)
-    }
+    // pushDialogMessages(message:{messageId: string|null, files: string|null, text: string|null, userId: string, createDate :any|null, updateDate: any|null})
+    // {
+    //     this._dialogMessages.push(message)
+    // }
 
 
     setSelectedDialog(selected: {dialogId: string, dialogName: string}|null){

@@ -1,110 +1,209 @@
-import React, { useContext, useState } from 'react';
+import React, {useCallback, useContext, useEffect, useRef, useState} from 'react';
 
 import { observer } from "mobx-react-lite";
 import { Context } from "../index";
+import {getMessages} from "../http/messengerAPI";
+
 
 //WebSocket
-const WS = new WebSocket('ws://localhost:9000');
-WS.onopen = function () {
-    console.log('Подключился');
-};
-//Функция для получения сообщений из Вебсокета
-WS.onmessage = function (message) {
-    console.log('Message: %s', message.data);
-};
-
-function wsSendPing() {
-    WS.send(JSON.stringify({ action: 'PING' }));
-};
+// const WS = new WebSocket('ws://localhost:9000');
+// WS.onopen = function () {
+//     console.log('Подключился');
+// };
+// //Функция для получения сообщений из Вебсокета
+// WS.onmessage = function (message) {
+//     console.log('Message: %s', message.data);
+//     trig = !trig
+// };
+//
+// function wsSendPing() {
+//     WS.send(JSON.stringify({ action: 'PING' }));
+// };
 
 //Функция для получения новых сообщений из БД по groupid
-async function getmess(groupid: any) {
-    const response = await fetch(`http://localhost:8080/getmessages?groupid=${groupid}`);
-    const mess = await response.json();
-    console.log(mess);
-}
+
 
 const MessengerPage = observer(() => {
     //Получение новых сообщений из БД
-    getmess(1);
+
+    const ws = useRef<any>(null);
 
     //Функция для отправки сообщения в Вебсокет
     function wsSendEcho() {
-        let text = textMessage;
+        const text = textMessage;
         //Пока такие данные, их надо будет хранить у клиента и получать из переменных
-        WS.send(JSON.stringify({ action: 'ECHO', data: text, groupid: 1, usersenderid: 1, createdate: "01.01.2001", updatedate: "01.01.2001" }));
+        // const index = messenger.dialogMessages.push({messageId: null, userId: userId(), text: textMessage, files: null, date: null}) - 1
+        ws.current.send(JSON.stringify({ action: 'ECHO', data: text, groupid: messenger.selectedDialog.dialogId, usersenderid: userId(), createdate: null, updatedate: null }));
     };
+    // const mockWSOnMes = WS.onmessage
+    const mock = () => {
+        // expect(mockWSOnMes).toHaveBeenCalled()
+    }
+    // await wait(() => {
+    //     expect(mockWSOnMes).toBeCalled();
+    // });
 
     const { user, messenger } = useContext(Context)
-    //Как результат запроса на сервер
-    const [dialogsMessages, setDialogsMessages] = useState<{ dialogId: string, messages: { messageId: string | null, files: string | null, text: string | null, userId: string, date: number | null }[] }[]>(
-        [
-            {
-                dialogId: '1', messages:
-                    [
-                        { messageId: '5', userId: '1234', text: 'asdwads', files: null, date: 127 },
-                        { messageId: '4', userId: '5432', text: 'Sample Text', files: null, date: 126 },
-                        { messageId: '3', userId: '1234', text: 'asdwads', files: null, date: 125 },
-                        {
-                            messageId: '2', userId: '5432', text: 'Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Text',
-                            files: null, date: 124
-                        },
-                        { messageId: '1', userId: '5432', text: 'Sample Text', files: null, date: 123 },
-                    ],
-            },
-            {
-                dialogId: '2', messages:
-                    [
 
-                        { messageId: '5', userId: '1234', text: 'Привет', files: null, date: 127 },
-                        { messageId: '4', userId: '2342', text: 'Sample Text', files: null, date: 126 },
-                        { messageId: '3', userId: '1234', text: 'asfdasd ', files: null, date: 125 },
-                        {
-                            messageId: '2', userId: '2342', text: 'Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Text',
-                            files: null, date: 124
-                        },
-                        { messageId: '1', userId: '2342', text: 'Sample Text', files: null, date: 123 },
-                    ],
-            }
-        ])
+    const [flagWSOnMes, setFlagWSOnMes] = useState<boolean>(false)
+    //Как результат запроса на сервер
+    // const [dialogsMessages, setDialogsMessages] = useState<{ dialogId: string, messages: { messageId: string | null, files: string | null, text: string | null, userId: string, date: number | null }[] }[]>(
+    //     [
+    //         {
+    //             dialogId: '1', messages:
+    //                 [
+    //                     { messageId: '5', userId: '1234', text: 'asdwads', files: null, date: 127 },
+    //                     { messageId: '4', userId: '5432', text: 'Sample Text', files: null, date: 126 },
+    //                     { messageId: '3', userId: '1234', text: 'asdwads', files: null, date: 125 },
+    //                     {
+    //                         messageId: '2', userId: '5432', text: 'Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Text',
+    //                         files: null, date: 124
+    //                     },
+    //                     { messageId: '1', userId: '5432', text: 'Sample Text', files: null, date: 123 },
+    //                 ],
+    //         },
+    //         {
+    //             dialogId: '2', messages:
+    //                 [
+    //
+    //                     { messageId: '5', userId: '1234', text: 'Привет', files: null, date: 127 },
+    //                     { messageId: '4', userId: '2342', text: 'Sample Text', files: null, date: 126 },
+    //                     { messageId: '3', userId: '1234', text: 'asfdasd ', files: null, date: 125 },
+    //                     {
+    //                         messageId: '2', userId: '2342', text: 'Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Text',
+    //                         files: null, date: 124
+    //                     },
+    //                     { messageId: '1', userId: '2342', text: 'Sample Text', files: null, date: 123 },
+    //                 ],
+    //         }
+    //     ])
+    const [dialogsMessages, setDialogsMessages] = useState<{
+        dialogId: string,
+        messageId: string | null,
+        text: string | null,
+        userSenderId: string,
+        createDate: any | null,
+        updateDate: any | null,
+    }[]|null>(null)
+
+    // {id: '2', groupid: '1', usersenderid: '1', createdate: '2000-12-31T21:00:00.000Z', updatedate: '2000-12-31T21:00:00.000Z', …}
     // const [dialogMessages, setDialogMessages] = useState<any>()
     const [textMessage, setTextMessage] = useState<string | null>('')
-    const selectDialog = (sDialog: any) => {
-        messenger.setSelectedDialog(sDialog)
-        messenger.setDialogMessages(dialogsMessages.find(dialog => dialog.dialogId === sDialog.dialogId)?.messages)
-    }
+    const [status, setStatus] = useState("")
+    const [flagWS, setFlagWS] = useState<boolean>(false)
+    const [latestMessage,setLatestMessage] = useState<any>(null)
+
+    // const uploadDialogMessages = () => {
+    //     getMessages(messenger.selectedDialog.dialogId).then(data => {
+    //         setDialogsMessages(data.map((row: any) => ({dialogId: row.groupid,
+    //             messageId: row.id,
+    //             text: row.text,
+    //             userSenderId: row.usersenderid,
+    //             createDate: row.createdate,
+    //             updateDate: row.updatedate
+    //         })))
+    //         messenger.setDialogMessages(dialogsMessages?.filter(dialog => dialog.dialogId ===  messenger.selectedDialog.dialogId)?.map(dialog =>
+    //             ({messageId: dialog.messageId,
+    //                 text: dialog.text,
+    //                 userSenderId: dialog.userSenderId,
+    //                 createDate: dialog.createDate,
+    //                 updateDate: dialog.updateDate})))
+    //         console.log(messenger.dialogMessages)
+    //         }
+    //     );
+    //
+    // }
+    useEffect(() => {
+        ws.current = new WebSocket("ws://localhost:9000"); // создаем ws соединение
+        ws.current.onopen = () => setStatus("Соединение открыто");	// callback на ивент открытия соединения
+        ws.current.onclose = () => setStatus("Соединение закрыто");
+        getWSMessages()
+    }, [ws]);
+
+    const getWSMessages = useCallback(() => {
+        ws.current.onmessage = (message: MessageEvent<any>) => {
+            // setFlagWS(!flagWS)
+            setLatestMessage(message)
+            console.log('Message: %s', message.data);
+        }
+    }, [latestMessage])
+    useEffect(() => {
+        if (!messenger.selectedDialog)
+            return
+        getMessages(messenger.selectedDialog.dialogId).then(data => {
+            console.log("Вызов")
+            // console.log(flagWS)
+                console.log(data?.filter((dialog: any) => dialog.groupid === messenger.selectedDialog.dialogId))
+            messenger.setDialogMessages(data.filter((dialog: any) => dialog.groupid === messenger.selectedDialog.dialogId)?.map((message: any) =>
+                ({
+                        messageId: message.id,
+                        text: message.text,
+                        userSenderId: message.usersenderid,
+                        createDate: message.createdate,
+                        updateDate: message.updatedate,
+                        files: null
+                })))
+            }
+
+        )
+    }, [messenger.selectedDialog,  latestMessage]);
+    // const selectDialog = (sDialog: any) => {
+    //     getMessages(sDialog.dialogId).then(data => {
+    //             setDialogsMessages(data.map((row: any) => ({dialogId: row.groupid,
+    //                 messageId: row.id,
+    //                 text: row.text,
+    //                 userSenderId: row.usersenderid,
+    //                 createDate: row.createdate,
+    //                 updateDate: row.updatedate
+    //             })))
+    //             messenger.setDialogMessages(dialogsMessages?.filter(dialog => dialog.dialogId === sDialog.dialogId)?.map(dialog =>
+    //                 ({messageId: dialog.messageId,
+    //                     text: dialog.text,
+    //                     userSenderId: dialog.userSenderId,
+    //                     createDate: dialog.createDate,
+    //                     updateDate: dialog.updateDate,
+    //
+    //                 })))
+    //             console.log(messenger.dialogMessages)
+    //             messenger.setSelectedDialog(sDialog)
+    //
+    //     }
+    //     );
+    // }
     const sendingMessage = () => {
         if (!textMessage)
             return;
-        const id = Number(messenger.dialogMessages[0].messageId) + 1
-        const sDialog = dialogsMessages.find(dialog => dialog.dialogId === messenger.selectedDialog.dialogId)
-        if (!sDialog) {
-            return
-        }
-
-        //Отправка сообщения в Вебсокет
         wsSendEcho();
+        // uploadDialogMessages()
+        setTextMessage("")
+        // const id = Number(messenger.dialogMessages[0].messageId) + 1
+        // const sDialog = dialogsMessages.find(dialog => dialog.dialogId === messenger.selectedDialog.dialogId)
+        // if (!sDialog) {
+        //     return
+        // }
+        //Отправка сообщения в Вебсокет
 
-        const length = sDialog?.messages.unshift({ messageId: new Date().getTime().toString(), userId: userId(), text: textMessage, files: null, date: null })
-        selectDialog(sDialog)
-        console.log(dialogsMessages)
-        console.log(length)
+        // const length = sDialog?.messages.unshift({ messageId: new Date().getTime().toString(), userId: userId(), text: textMessage, files: null, date: null })
+        // selectDialog(sDialog)
+        // console.log(dialogsMessages)
+        // console.log(length)
         // messenger.dialogMessages.unshift({messageId: null, userId: userId(), text: textMessage, files: null, date: null})
         // запрос на доавбление
-        setTimeout(() => {
-            sDialog.messages[sDialog.messages.length - length].messageId = id.toString()
-            sDialog.messages[sDialog.messages.length - length].date = new Date().getTime()
-            selectDialog(sDialog)
-            console.log(dialogsMessages)
-            console.log(length)
-            console.log("Complete")
-        }, 3000);
+        // setTimeout(() => {
+        //     sDialog.messages[sDialog.messages.length - length].messageId = id.toString()
+        //     sDialog.messages[sDialog.messages.length - length].date = new Date().getTime()
+        //     selectDialog(sDialog)
+        //     // console.log(dialogsMessages)
+        //     // console.log(length)
+        //     // console.log("Complete")
+        // }, 3000);
 
         //добавляем все сообщения полученые за время последнено запроса, но с web сокетом такимх ситуаций не должно быть
 
         //обновляем в хранилище
 
         //выполнено успешно
+
     }
     const userId = () => user.user.userId;
 
@@ -120,7 +219,12 @@ const MessengerPage = observer(() => {
                         <div
                             style={{ display: "flex", cursor: "pointer", border: "solid 1px black", width: "100%", height: "50px", alignItems: "center" }}
                             key={dialog.dialogId}
-                            onClick={() => selectDialog(dialog)}
+                            onClick={async () => {
+                                if (messenger.selectedDialog !== dialog)
+                                    messenger.setSelectedDialog(dialog)
+
+                            }
+                        }
                         >
                             <div style={{ display: 'flex', width: "50px", height: "50px", justifyContent: "center", alignItems: "center" }}>
                                 {
@@ -145,12 +249,15 @@ const MessengerPage = observer(() => {
             </div>
             <div style={{ display: 'flex', background: "honeydew", maxWidth: "900px", width: "700px", minHeight: "500px", flexDirection: "column" }}>
 
-                <div style={{ display: "flex", flexDirection: "column-reverse", width: "100%", height: "100%" }}>
+                <div style={{ display: "flex", flexDirection: "column", width: "100%", height: "100%", justifyContent: "end"}}>
                     {
                         messenger.selectedDialog ?
-                            messenger.dialogMessages.map((message: { messageId: null | string; userId: any; text: string | null | undefined; date: number | null }) =>
-                                <div key={message.messageId} style={userId() === message.userId ? { background: "lightblue", marginRight: "35px", marginLeft: "auto", marginTop: "5px", marginBottom: "5px", color: (message.date ? "black" : "red") } : { background: "lightgreen", marginRight: "auto", marginLeft: "35px", marginTop: "5px", marginBottom: "5px", }}>{message.text}</div>
-                            )
+                            (messenger.dialogMessages? messenger.dialogMessages.map((message: {messageId: string|null, files: string|null, text: string|null, userSenderId: string, createDate :any|null, updateDate: any|null}) =>
+                                <div key={message.messageId} style={userId() === message.userSenderId ? { background: "lightblue", marginRight: "35px", marginLeft: "auto", marginTop: "5px", marginBottom: "5px", color: (message.createDate ? "black" : "red") } : { background: "lightgreen", marginRight: "auto", marginLeft: "35px", marginTop: "5px", marginBottom: "5px", }}>{message.text}</div>
+                            ):
+                            <div style={{ display: "flex", width: "100%", height: "100%", justifyContent: "center", alignItems:"center"}}>
+                                Все еще не ни одного сообщения, начните первым!
+                            </div>)
                             :
                             null
                     }
@@ -163,7 +270,6 @@ const MessengerPage = observer(() => {
                             <div contentEditable={"true"} style={{ padding: "3px", borderRadius: "5px", background: "yellow", width: "450px", minHeight: "30px", maxHeight: "120px", resize: "none", marginTop: "5px", marginBottom: "5px", overflowX: "hidden", overflowY: "auto", textAlign: "start", boxSizing: "border-box" }}
                                 onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
                                     setTextMessage(e.currentTarget.textContent)
-                                    console.log(textMessage)
                                 }}
                                 suppressContentEditableWarning={true}
                             >
