@@ -1,0 +1,219 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "API для проекта socialnetwork",
+    "description": "GitHub https://github.com/fbrtyu/socialnetwork",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://localhost:8080/socialnetwork"
+    }
+  ],
+  "tags": [
+    {
+      "name": "chat",
+      "description": "Работа с чатами"
+    }
+  ],
+  "paths": {
+    "/getchats": {
+      "get": {
+        "tags": [
+          "chat"
+        ],
+        "description": "Получение всех чатов пользователя по его ID",
+        "parameters": [
+          {
+            "name": "userid",
+            "in": "query",
+            "description": "id пользователя",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Успешный возврат данных. Аватар в формате строки в base64. На клиенте можно эту строку добавить в src img и будет картинка. Так картинку проще передавать и хранить в виде строки, а не файла.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Chats"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/getmessages": {
+      "get": {
+        "tags": [
+          "chat"
+        ],
+        "description": "Получение всех сообщений для чата",
+        "parameters": [
+          {
+            "name": "chatid",
+            "in": "query",
+            "description": "id конкретного чата",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "userid",
+            "in": "query",
+            "description": "id пользователя",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Успешный возврат данных. Аватар в формате строки в base64. На клиенте можно эту строку добавить в src img и будет картинка. Так картинку проще передавать и хранить в виде строки, а не файла.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Messages"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Chats": {
+        "type": "object",
+        "properties": {
+          "Count": {
+            "type": "integer",
+            "format": "int64",
+            "example": 10
+          },
+          "Chats": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Chat"
+            }
+          }
+        }
+      },
+      "Chat": {
+        "type": "object",
+        "properties": {
+          "ID": {
+            "type": "integer",
+            "format": "int64",
+            "example": 198772
+          },
+          "UserCreaterId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 198772
+          },
+          "Name": {
+            "type": "string",
+            "format": "string",
+            "example": "chatname"
+          },
+          "ChatAvatar": {
+            "type": "string",
+            "format": "base64",
+            "example": "cXdlcnR5MTIzNDU2"
+          },
+          "ChatUsers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/User"
+            }
+          }
+        }
+      },
+      "Messages": {
+        "type": "object",
+        "properties": {
+          "ChatId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 10
+          },
+          "LastMessages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Message"
+            }
+          }
+        }
+      },
+      "Message": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 10
+          },
+          "SenderId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 198772
+          },
+          "SenderName": {
+            "type": "string",
+            "format": "string",
+            "example": "Иванов Иван"
+          },
+          "SenderAvatar": {
+            "type": "string",
+            "format": "base64",
+            "example": "cXdlcnR5MTIzNDU2"
+          },
+          "Text": {
+            "type": "string",
+            "format": "string",
+            "example": "Text message"
+          },
+          "CreateDate": {
+            "type": "string",
+            "format": "date",
+            "example": "2001-01-01T00:00:00.000Z"
+          },
+          "UpdateDate": {
+            "type": "string",
+            "format": "date",
+            "example": "2001-01-02T00:00:00.000Z"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "UserId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 198772
+          },
+          "UserName": {
+            "type": "string",
+            "format": "string",
+            "example": "Иванов Иван"
+          },
+          "UserAvatar": {
+            "type": "string",
+            "format": "base64",
+            "example": "cXdlcnR5MTIzNDU2"
+          }
+        }
+      }
+    }
+  }
+}
