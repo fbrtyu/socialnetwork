@@ -48,7 +48,7 @@
         }
       }
     },
-    "/getmessages": {
+    "/getchatmessages": {
       "get": {
         "tags": [
           "chat"
@@ -68,6 +68,15 @@
             "name": "userid",
             "in": "query",
             "description": "id пользователя",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "createdate",
+            "in": "query",
+            "description": "Дата, после которой будут выводиться сообщения",
             "required": true,
             "schema": {
               "type": "integer"
@@ -134,6 +143,12 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/User"
+            }
+          },
+          "LastMessage": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Message"
             }
           }
         }

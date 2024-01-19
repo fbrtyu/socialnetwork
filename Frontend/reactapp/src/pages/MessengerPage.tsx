@@ -22,7 +22,7 @@ import ChatList from "../components/ChatList";
 //     WS.send(JSON.stringify({ action: 'PING' }));
 // };
 
-//Функция для получения новых сообщений из БД по groupid
+//Функция для получения новых сообщений из БД по chatid
 
 
 const MessengerPage = observer(() => {
@@ -35,7 +35,7 @@ const MessengerPage = observer(() => {
         const text = textMessage;
         //Пока такие данные, их надо будет хранить у клиента и получать из переменных
         // const index = messenger.dialogMessages.push({messageId: null, userId: userId(), text: textMessage, files: null, date: null}) - 1
-        ws.current.send(JSON.stringify({ action: 'ECHO', data: text, groupid: messenger.selectedDialog.dialogId, usersenderid: userId(), createdate: null, updatedate: null }));
+        ws.current.send(JSON.stringify({ action: 'ECHO', data: text, chatid: messenger.selectedDialog.dialogId, usersenderid: userId(), createdate: null, updatedate: null }));
     };
     // const mockWSOnMes = WS.onmessage
     const mock = () => {
@@ -56,7 +56,7 @@ const MessengerPage = observer(() => {
         updateDate: any | null,
     }[]|null>(null)
 
-    // {id: '2', groupid: '1', usersenderid: '1', createdate: '2000-12-31T21:00:00.000Z', updatedate: '2000-12-31T21:00:00.000Z', …}
+    // {id: '2', chatid: '1', usersenderid: '1', createdate: '2000-12-31T21:00:00.000Z', updatedate: '2000-12-31T21:00:00.000Z', …}
     // const [dialogMessages, setDialogMessages] = useState<any>()
     const [textMessage, setTextMessage] = useState<string | null>('')
     const [status, setStatus] = useState("")
@@ -65,7 +65,7 @@ const MessengerPage = observer(() => {
 
     // const uploadDialogMessages = () => {
     //     getMessages(messenger.selectedDialog.dialogId).then(data => {
-    //         setDialogsMessages(data.map((row: any) => ({dialogId: row.groupid,
+    //         setDialogsMessages(data.map((row: any) => ({dialogId: row.chatid,
     //             messageId: row.id,
     //             text: row.text,
     //             userSenderId: row.usersenderid,
@@ -102,8 +102,8 @@ const MessengerPage = observer(() => {
                 console.log(userId())
                 console.log(data)
             messenger.setDialogs(data.Chats.map((chat: any) => ({
-                dialogId: chat.groupid,
-                dialogName: chat.name,
+                dialogId: chat.chatid,
+                dialogName: chat.chatname,
                 dialogImage: null,
                 userCreatorId: chat.usercreaterid,
                 users: chat.Users
@@ -119,8 +119,8 @@ const MessengerPage = observer(() => {
             console.log(data)
             console.log("Вызов")
             // console.log(flagWS)
-            //     console.log(data?.filter((dialog: any) => dialog.groupid === messenger.selectedDialog.dialogId))
-            messenger.setDialogMessages(data.LastMessages.filter((chat: any) => chat.groupid === messenger.selectedDialog.dialogId)?.map((message: any) =>
+            //     console.log(data?.filter((dialog: any) => dialog.chatid === messenger.selectedDialog.dialogId))
+            messenger.setDialogMessages(data.LastMessages.filter((chat: any) => chat.chatid === messenger.selectedDialog.dialogId)?.map((message: any) =>
                 ({
                         messageId: message.id,
                         text: message.text,
@@ -137,7 +137,7 @@ const MessengerPage = observer(() => {
     }, [messenger.selectedDialog,  latestMessage]);
     // const selectDialog = (sDialog: any) => {
     //     getMessages(sDialog.dialogId).then(data => {
-    //             setDialogsMessages(data.map((row: any) => ({dialogId: row.groupid,
+    //             setDialogsMessages(data.map((row: any) => ({dialogId: row.chatid,
     //                 messageId: row.id,
     //                 text: row.text,
     //                 userSenderId: row.usersenderid,

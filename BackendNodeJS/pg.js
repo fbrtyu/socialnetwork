@@ -18,8 +18,8 @@ class getchatMessagesAnswer {
     ChatId = 0;
     LastMessages = [];
 
-    constructor(groupid, chatmessages) {
-        this.ChatId = groupid;
+    constructor(chatid, chatmessages) {
+        this.ChatId = chatid;
         this.LastMessages = chatmessages;
     }
 }
@@ -37,39 +37,12 @@ const pgsendmessage = async (data) => {
         await client.connect()
 
         const query = {
-            text: 'INSERT INTO message(groupid, usersenderid, createdate, updatedate, text) VALUES($1, $2, $3, $4, $5)',
-            values: [data.groupid, data.usersenderid, new Date(), new Date(), data.data],
+            text: 'INSERT INTO message(chatid, usersenderid, createdate, updatedate, text) VALUES($1, $2, $3, $4, $5)',
+            values: [data.chatid, data.usersenderid, new Date(), new Date(), data.data],
         }
         const res = await client.query(query)
         console.log(res.rows[0])
         await client.end()
-    } catch (error) {
-        console.log(error)
-    }
-}
-
-//Функция получения всех сообщений из БД по groupid
-const pggetmessage = async (groupid) => {
-
-    try {
-        const client = new Client({
-            user: process.env.PGUSER,
-            host: process.env.PGHOST,
-            database: process.env.PGDATABASE,
-            password: process.env.PGPASSWORD,
-            port: process.env.PGPORT
-        })
-        await client.connect()
-
-        const query = {
-            text: 'SELECT * FROM message WHERE groupid = $1 ORDER BY updatedate',
-            values: [groupid],
-        }
-        const res = await client.query(query)
-        await client.end()
-        let a = res.rows
-        console.log(a)
-        return a
     } catch (error) {
         console.log(error)
     }
@@ -89,7 +62,7 @@ const getchats = async (userid) => {
         await client.connect()
 
         const query = {
-            text: 'SELECT groupid, usercreaterid, userid, name FROM chat INNER JOIN chatuserinfo ON (chat.id = chatuserinfo.groupid) WHERE userid = $1',
+            text: 'SELECT chatid, usercreaterid, userid, chatname FROM chat INNER JOIN chatuserinfo ON (chat.id = chatuserinfo.chatid) WHERE userid = $1',
             values: [userid],
         }
 
@@ -102,15 +75,24 @@ const getchats = async (userid) => {
         while (rc - 1 >= 0) {
 
             const query2 = {
-                text: 'SELECT userid, firstname FROM userinfo INNER JOIN (SELECT groupid, userid FROM chat INNER JOIN chatuserinfo ON (chat.id = chatuserinfo.groupid) WHERE groupid = $1) ON (userinfo.id = userid)',
-                values: [res.rows[rc - 1].groupid],
+                text: 'SELECT userid, firstname FROM userinfo INNER JOIN (SELECT chatid, userid FROM chat INNER JOIN chatuserinfo ON (chat.id = chatuserinfo.chatid) WHERE chatid = $1) ON (userinfo.id = userid)',
+                values: [res.rows[rc - 1].chatid],
             }
     
             const res2 = await client.query(query2)
             let chatusers = res2.rows
 
+            const query3 = {
+                text: 'SELECT * FROM message WHERE message.chatid = $1 ORDER BY createdate DESC LIMIT 1',
+                values: [res.rows[rc - 1].chatid],
+            }
+    
+            const res3 = await client.query(query3)
+            let lastchatmessage = res3.rows
+
             objectT = JSON.parse(JSON.stringify(res.rows[rc - 1]));
             objectT['Users'] = chatusers;
+            objectT['LastMessage'] = lastchatmessage;
             chat.push(objectT);
 
             rc = rc - 1;
@@ -125,8 +107,8 @@ const getchats = async (userid) => {
     }
 }
 
-//Функция получения всех сообщений чата пользователя из БД по userid и groupid
-const getonechatmessages = async (userid, groupid) => {
+//Функция получения всех сообщений чата пользователя из БД по userid и chatid
+const getonechatmessages = async (userid, chatid, createdate) => {
     try {
         const client = new Client({
             user: process.env.PGUSER,
@@ -139,8 +121,8 @@ const getonechatmessages = async (userid, groupid) => {
         await client.connect()
 
         const query = {
-            text: 'SELECT groupid, message.id, usersenderid, firstname, text, createdate, updatedate FROM userinfo INNER JOIN message ON (userinfo.id = message.usersenderid) WHERE groupid = $1',
-            values: [groupid],
+            text: 'SELECT chatid, message.id, usersenderid, firstname, text, createdate, updatedate FROM userinfo INNER JOIN message ON (userinfo.id = message.usersenderid) WHERE chatid = $1 AND createdate > $2',
+            values: [chatid, createdate],
         }
 
         const res = await client.query(query)
@@ -148,7 +130,7 @@ const getonechatmessages = async (userid, groupid) => {
 
         await client.end()
 
-        const answer = new getchatMessagesAnswer(groupid, chatmessages)
+        const answer = new getchatMessagesAnswer(chatid, chatmessages)
         return answer
     } catch (error) {
         console.log(error)
@@ -160,5 +142,3 @@ module.exports.getonechatmessages = getonechatmessages;
 module.exports.getchats = getchats;
 
 module.exports.pgsendmessage = pgsendmessage;
-
-module.exports.pggetmessage = pggetmessage;

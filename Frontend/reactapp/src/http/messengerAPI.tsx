@@ -1,5 +1,5 @@
 export const getChatMessages = async (groupId: any, userId: any)=> {
-    const response = await fetch(`http://localhost:8080/getchatmessages?groupid=${groupId}&userid=${userId}`);
+    const response = await fetch(`http://localhost:8080/getchatmessages?chatid=${groupId}&userid=${userId}&createdate="2000-01-01"`);
     // console.log(response.json());
     return await response.json();
 }
