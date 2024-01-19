@@ -10,7 +10,7 @@ const ChatList = observer(() => {
             {
                 messenger.dialogs.map((dialog: { dialogId: string, dialogName: string | null, dialogImage: string | null, users: { userId: string, fN: string, image: string | null }[] }) =>
                     <div
-                        style={{ display: "flex", cursor: "pointer", border: "solid 1px black", width: "100%", height: "50px", alignItems: "center" }}
+                        style={{ display: "flex", cursor: "pointer", border: "solid 1px black", width: "100%", height: "50px", alignItems: "center"}}
                         key={dialog.dialogId}
                         onClick={async () => {
                             if (messenger.selectedDialog !== dialog)

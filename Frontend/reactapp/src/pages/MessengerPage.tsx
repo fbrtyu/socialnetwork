@@ -207,11 +207,11 @@ const MessengerPage = observer(() => {
             <ChatList></ChatList>
             <div style={{ display: 'flex', background: "honeydew", maxWidth: "900px", width: "700px", minHeight: "500px", flexDirection: "column" }}>
 
-                <div style={{ display: "flex", flexDirection: "column", width: "100%", height: "100%", justifyContent: "end"}}>
+                <div style={{ display: "flex", flexDirection: "column", width: "100%",  minHeight:' min-content', maxHeight: "500px",  overflow: 'auto'}}>
                     {
                         messenger.selectedDialog ?
                             (messenger.dialogMessages? messenger.dialogMessages.map((message: {messageId: string|null, files: string|null, text: string|null, firstName: string, userSenderId: string, createDate :any|null, updateDate: any|null}) =>
-                                    <div  style={{display: "flex", alignItems: "center",marginRight: (userId() === message.userSenderId ? "5px": ""),
+                                    <div  style={{display: "flex", alignItems: "center", minHeight:' min-content', marginRight: (userId() === message.userSenderId ? "5px": ""),
                                         marginLeft: (userId() === message.userSenderId ? "" : "5px"),}} key={message.messageId}>
                                         {/*//: (userId() === message.userSenderId ? "column": "column-reverse"*/}
                                         <div style={{ display: 'flex', width: "50px", height: "50px", justifyContent: "center", alignItems: "center" }}>
