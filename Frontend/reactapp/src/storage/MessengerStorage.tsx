@@ -2,21 +2,21 @@ import {makeAutoObservable} from "mobx";
 
 
 export default class MessengerStorage{
-    _dialogs: {dialogId: string, dialogName: string|null, dialogImage: string| null, users: {userId: string, fN: string, image: string|null}[]}[];
-    _dialogMessages: {messageId: string|null, files: string|null, text: string|null, userSenderId: string, createDate: any|null, updateDate: any|null}[]|null;
+    _dialogs: {dialogId: string, dialogName: string|null, userCreatorId: string, dialogImage: string| null, users: {userId: string, fN: string, image: string|null}[]}[];
+    _dialogMessages: {messageId: string|null, files: string|null, text: string|null, userSenderId: string, firstName: string, createDate: any|null, updateDate: any|null}[]|null;
     _selectedDialog: {dialogId: string, dialogName: string}|null
     constructor() {
         this._dialogs = [
-            {dialogId: "1", dialogName: null, dialogImage: null, users: [
-                    {userId: '1234', fN: "Александр", image: null},
-                    {userId: '5432', fN: "Илья", image: null},
-                ]
-            },
-            {dialogId: "2", dialogName: null, dialogImage: null, users: [
-                    {userId: '1234', fN: "Александр", image: null},
-                    {userId: '2342', fN: "Вова", image: null},
-                ]
-            },
+            // {dialogId: "1", dialogName: null, dialogImage: null, users: [
+            //         {userId: '1234', fN: "Александр", image: null},
+            //         {userId: '5432', fN: "Илья", image: null},
+            //     ]
+            // },
+            // {dialogId: "2", dialogName: null, dialogImage: null, users: [
+            //         {userId: '1234', fN: "Александр", image: null},
+            //         {userId: '2342', fN: "Вова", image: null},
+            //     ]
+            // },
         ]
         this._dialogMessages = [
             // {messageId: '1', userId: '1231', text: 'asdwads', files: null, date: 123},
@@ -38,7 +38,7 @@ export default class MessengerStorage{
     setDialogs(dialogs: []) {
         this._dialogs = dialogs
     }
-    setDialogMessages(messages: {messageId: string|null, files: string|null, text: string|null, userSenderId: string, createDate :any|null, updateDate: any|null}[]) {
+    setDialogMessages(messages: {messageId: string|null, files: string|null, text: string|null, userSenderId: string, firstName: string, createDate :any|null, updateDate: any|null}[]) {
         this._dialogMessages = messages
     }
     // pushDialogMessages(message:{messageId: string|null, files: string|null, text: string|null, userId: string, createDate :any|null, updateDate: any|null})

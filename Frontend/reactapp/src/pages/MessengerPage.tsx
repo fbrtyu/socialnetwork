@@ -2,7 +2,9 @@ import React, {useCallback, useContext, useEffect, useRef, useState} from 'react
 
 import { observer } from "mobx-react-lite";
 import { Context } from "../index";
-import {getMessages} from "../http/messengerAPI";
+import {getChatMessages, getChats} from "../http/messengerAPI";
+import MessageInput from "../components/MessageInput";
+import ChatList from "../components/ChatList";
 
 
 //WebSocket
@@ -39,44 +41,12 @@ const MessengerPage = observer(() => {
     const mock = () => {
         // expect(mockWSOnMes).toHaveBeenCalled()
     }
-    // await wait(() => {
-    //     expect(mockWSOnMes).toBeCalled();
-    // });
-
     const { user, messenger } = useContext(Context)
 
     const [flagWSOnMes, setFlagWSOnMes] = useState<boolean>(false)
     //Как результат запроса на сервер
     // const [dialogsMessages, setDialogsMessages] = useState<{ dialogId: string, messages: { messageId: string | null, files: string | null, text: string | null, userId: string, date: number | null }[] }[]>(
-    //     [
-    //         {
-    //             dialogId: '1', messages:
-    //                 [
-    //                     { messageId: '5', userId: '1234', text: 'asdwads', files: null, date: 127 },
-    //                     { messageId: '4', userId: '5432', text: 'Sample Text', files: null, date: 126 },
-    //                     { messageId: '3', userId: '1234', text: 'asdwads', files: null, date: 125 },
-    //                     {
-    //                         messageId: '2', userId: '5432', text: 'Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Text',
-    //                         files: null, date: 124
-    //                     },
-    //                     { messageId: '1', userId: '5432', text: 'Sample Text', files: null, date: 123 },
-    //                 ],
-    //         },
-    //         {
-    //             dialogId: '2', messages:
-    //                 [
-    //
-    //                     { messageId: '5', userId: '1234', text: 'Привет', files: null, date: 127 },
-    //                     { messageId: '4', userId: '2342', text: 'Sample Text', files: null, date: 126 },
-    //                     { messageId: '3', userId: '1234', text: 'asfdasd ', files: null, date: 125 },
-    //                     {
-    //                         messageId: '2', userId: '2342', text: 'Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Text',
-    //                         files: null, date: 124
-    //                     },
-    //                     { messageId: '1', userId: '2342', text: 'Sample Text', files: null, date: 123 },
-    //                 ],
-    //         }
-    //     ])
+    // )
     const [dialogsMessages, setDialogsMessages] = useState<{
         dialogId: string,
         messageId: string | null,
@@ -128,21 +98,39 @@ const MessengerPage = observer(() => {
         }
     }, [latestMessage])
     useEffect(() => {
+        getChats(userId()).then((data) => { //: {Count: number, Chats: any[]}[]
+                console.log(userId())
+                console.log(data)
+            messenger.setDialogs(data.Chats.map((chat: any) => ({
+                dialogId: chat.groupid,
+                dialogName: chat.name,
+                dialogImage: null,
+                userCreatorId: chat.usercreaterid,
+                users: chat.Users
+            })))
+            console.log(messenger.dialogs)
+            }
+        )
+    }, []);
+    useEffect(() => {
         if (!messenger.selectedDialog)
             return
-        getMessages(messenger.selectedDialog.dialogId).then(data => {
+        getChatMessages(messenger.selectedDialog.dialogId, userId()).then(data => {
+            console.log(data)
             console.log("Вызов")
             // console.log(flagWS)
-                console.log(data?.filter((dialog: any) => dialog.groupid === messenger.selectedDialog.dialogId))
-            messenger.setDialogMessages(data.filter((dialog: any) => dialog.groupid === messenger.selectedDialog.dialogId)?.map((message: any) =>
+            //     console.log(data?.filter((dialog: any) => dialog.groupid === messenger.selectedDialog.dialogId))
+            messenger.setDialogMessages(data.LastMessages.filter((chat: any) => chat.groupid === messenger.selectedDialog.dialogId)?.map((message: any) =>
                 ({
                         messageId: message.id,
                         text: message.text,
                         userSenderId: message.usersenderid,
+                        firstName: message.firstname,
                         createDate: message.createdate,
                         updateDate: message.updatedate,
                         files: null
                 })))
+                console.log(messenger.dialogMessages)
             }
 
         )
@@ -210,53 +198,61 @@ const MessengerPage = observer(() => {
     function delay(ms: number) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
-
+    //           text-overflow: ellipsis; /* will make [...] at the end */
+    // width: 370px; /* change to your preferences */
+    // white-space: nowrap; /* paragraph to one line */
+    // overflow:hidden; /* older browsers */
     return (
-        <div style={{ display: "flex", justifyContent: "center" }}>
-            <div style={{ display: "flex", flexDirection: "column", width: "300px", height: "500px", background: "bisque" }}>
-                {
-                    messenger.dialogs.map((dialog: { dialogId: string, dialogName: string | null, dialogImage: string | null, users: { userId: string, fN: string, image: string | null }[] }) =>
-                        <div
-                            style={{ display: "flex", cursor: "pointer", border: "solid 1px black", width: "100%", height: "50px", alignItems: "center" }}
-                            key={dialog.dialogId}
-                            onClick={async () => {
-                                if (messenger.selectedDialog !== dialog)
-                                    messenger.setSelectedDialog(dialog)
-
-                            }
-                        }
-                        >
-                            <div style={{ display: 'flex', width: "50px", height: "50px", justifyContent: "center", alignItems: "center" }}>
-                                {
-                                    dialog.dialogImage ? <img src={dialog.dialogImage} style={{ borderRadius: "50%" }} />
-                                        :
-                                        <div style={{ display: 'flex', width: "90%", height: '90%', borderRadius: "50%", backgroundColor: "blue" }} />
-
-                                }
-                            </div>
-                            {dialog.dialogName ? dialog.dialogName
-                                :
-                                dialog.users.map((user: { userId: string, fN: string, image: string | null }) => {
-                                    if (user.userId !== userId())
-                                        return user.fN
-                                }
-                                ).join(" ")
-                            }
-                        </div>
-
-                    )
-                }
-            </div>
+        <div style={{ display: "flex", justifyContent: "center", marginTop: "20px"}}>
+            <ChatList></ChatList>
             <div style={{ display: 'flex', background: "honeydew", maxWidth: "900px", width: "700px", minHeight: "500px", flexDirection: "column" }}>
 
                 <div style={{ display: "flex", flexDirection: "column", width: "100%", height: "100%", justifyContent: "end"}}>
                     {
                         messenger.selectedDialog ?
-                            (messenger.dialogMessages? messenger.dialogMessages.map((message: {messageId: string|null, files: string|null, text: string|null, userSenderId: string, createDate :any|null, updateDate: any|null}) =>
-                                <div key={message.messageId} style={userId() === message.userSenderId ? { background: "lightblue", marginRight: "35px", marginLeft: "auto", marginTop: "5px", marginBottom: "5px", color: (message.createDate ? "black" : "red") } : { background: "lightgreen", marginRight: "auto", marginLeft: "35px", marginTop: "5px", marginBottom: "5px", }}>{message.text}</div>
+                            (messenger.dialogMessages? messenger.dialogMessages.map((message: {messageId: string|null, files: string|null, text: string|null, firstName: string, userSenderId: string, createDate :any|null, updateDate: any|null}) =>
+                                    <div  style={{display: "flex", alignItems: "center",marginRight: (userId() === message.userSenderId ? "5px": ""),
+                                        marginLeft: (userId() === message.userSenderId ? "" : "5px"),}} key={message.messageId}>
+                                        {/*//: (userId() === message.userSenderId ? "column": "column-reverse"*/}
+                                        <div style={{ display: 'flex', width: "50px", height: "50px", justifyContent: "center", alignItems: "center" }}>
+                                            {
+                                                userId() === message.userSenderId ?
+                                                    null :
+                                                    messenger.dialogs.find((dialog: any) => dialog.dialogId = messenger.selectedDialog.dialogId)?.users.find((user: any)=> user.userId = message.userSenderId)?.image ?
+                                                        <img src={messenger.dialogs.find((dialog: any) => dialog.dialogId = messenger.selectedDialog.dialogId).users.find((user: any)=> user.userId = message.userSenderId).image} style={{ borderRadius: "50%" }} />
+                                                        :
+                                                        <div style={{ width: "90%", height: '90%', borderRadius: "50%", backgroundColor: "green",}} />
+
+                                            }
+                                        </div>
+                                        <div  style={
+                                        {display: 'inline-block', background: (userId() === message.userSenderId ? "lightblue": "lightgreen"),
+                                            marginRight: (userId() === message.userSenderId ? "5px": "auto"),
+                                            marginLeft: (userId() === message.userSenderId ? "auto": "5px"),
+                                            textAlign: "justify", whiteSpace: 'normal',wordWrap: 'break-word',
+                                            marginTop: "5px", marginBottom: "5px",maxWidth: "70%",maxHeight: "auto",
+                                            color: (message.createDate ? "black" : "red") }}
+                                        >
+                                            <div style={{marginLeft: "10px", marginTop: "2px", marginRight: "10px", fontWeight: '500'}}>
+                                                {message.firstName}
+                                            </div>
+                                            <div style={{textAlign:"justify", color: "#424242", fontSize: '0.9rem',whiteSpace: 'normal',wordWrap: 'break-word', marginRight: "10px", marginLeft: "10px", marginTop: "2px"}}>
+                                                {message.text}
+                                            </div>
+
+                                            <div style={{textAlign:"end", color: "#606161", fontSize: 'smaller',whiteSpace: 'normal',wordWrap: 'break-word'}}>
+                                                {
+                                                    [new Date(message.createDate).getHours(), new Date(message.createDate).getMinutes()].map(function (x) {
+                                                        return x < 10 ? "0" + x : x
+                                                    }).join(":")
+                                                }
+                                            </div>
+
+                                        </div>
+                                    </div>
                             ):
                             <div style={{ display: "flex", width: "100%", height: "100%", justifyContent: "center", alignItems:"center"}}>
-                                Все еще не ни одного сообщения, начните первым!
+                                Все еще нет ни одного сообщения, начните первым!
                             </div>)
                             :
                             null
@@ -264,24 +260,7 @@ const MessengerPage = observer(() => {
                 </div>
                 {
                     messenger.selectedDialog ?
-                        <div style={{ display: "flex", marginBottom: "0px", marginTop: "auto", background: "yellowgreen", width: "100%", maxHeight: "120px", paddingTop: "", alignItems: "center" }}>
-
-                            <div style={{ marginBottom: "0px", marginTop: "auto", width: "30px", height: "30px", marginLeft: "auto" }}>X</div>
-                            <div contentEditable={"true"} style={{ padding: "3px", borderRadius: "5px", background: "yellow", width: "450px", minHeight: "30px", maxHeight: "120px", resize: "none", marginTop: "5px", marginBottom: "5px", overflowX: "hidden", overflowY: "auto", textAlign: "start", boxSizing: "border-box" }}
-                                onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                    setTextMessage(e.currentTarget.textContent)
-                                }}
-                                suppressContentEditableWarning={true}
-                            >
-                                {textMessage}
-                            </div>
-                            <input
-                                type={"button"}
-                                value={"X"}
-                                style={{ marginRight: "auto", marginLeft: "5px", width: "25px", height: "25px", }}
-                                onClick={() => sendingMessage()}
-                            />
-                        </div>
+                        <MessageInput textMessage={textMessage} setTextMessage={setTextMessage} sendingMessage={sendingMessage}></MessageInput>
                         :
                         null
                 }

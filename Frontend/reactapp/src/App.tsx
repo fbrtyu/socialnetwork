@@ -48,7 +48,7 @@ function App() {
         <BrowserRouter>
             <NavBar/>
 
-            <nav style={{minWidth: "100%", height: "50px", background: "gray", marginBottom: "5px",display: "flex"}}></nav>
+            {/*<nav style={{minWidth: "100%", height: "50px", background: "gray", marginBottom: "5px",display: "flex"}}></nav>*/}
             <div style={{display: "flex", marginLeft: "auto", marginRight: "auto"}}>
                 {/*<SideMenu></SideMenu>*/}
                 {/*<MessegerPage></MessegerPage>*/}
