@@ -6,7 +6,7 @@ const ChatList = observer(() => {
     const {user, messenger} = useContext(Context)
     const userId = () => user.user.userId
     return (
-        <div style={{ display: "flex", flexDirection: "column", width: "300px", height: "500px", background: "bisque" }}>
+        <div style={{ display: "flex", flexDirection: "column", width: "300px", minWidth:"300px", background: "bisque",maxHeight: "100%"}}>
             {
                 messenger.dialogs.map((dialog: { dialogId: string, dialogName: string | null, dialogImage: string | null, users: { userId: string, fN: string, image: string | null }[] }) =>
                     <div
@@ -15,7 +15,6 @@ const ChatList = observer(() => {
                         onClick={async () => {
                             if (messenger.selectedDialog !== dialog)
                                 messenger.setSelectedDialog(dialog)
-
                         }
                         }
                     >

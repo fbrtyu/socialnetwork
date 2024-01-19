@@ -44,7 +44,7 @@ function App() {
     //     return <div>Loading</div>
     // }
   return (
-    <div className="App" style={{display: "flex", flexDirection: "column"}}>
+    <div className="App" style={{display: "flex", flexDirection: "column", maxWidth: "100vw", height: "100vh"}}>
         <BrowserRouter>
             <NavBar/>
 

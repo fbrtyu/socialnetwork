@@ -203,11 +203,11 @@ const MessengerPage = observer(() => {
     // white-space: nowrap; /* paragraph to one line */
     // overflow:hidden; /* older browsers */
     return (
-        <div style={{ display: "flex", justifyContent: "center", marginTop: "20px"}}>
+        <div style={{ display: "flex", justifyContent: "center", marginTop: "20px", height: '100%',maxHeight: "100%", marginBottom:"20px", boxSizing:"border-box"}}>
             <ChatList></ChatList>
-            <div style={{ display: 'flex', background: "honeydew", maxWidth: "900px", width: "700px", minHeight: "500px", flexDirection: "column" }}>
+            <div style={{ display: 'flex', background: "honeydew", maxWidth: "900px", width: "700px", maxHeight: "100%", flexDirection: "column" }}>
 
-                <div style={{ display: "flex", flexDirection: "column", width: "100%",  minHeight:' min-content', maxHeight: "500px",  overflow: 'auto'}}>
+                <div style={{ display: "flex", flexDirection: "column", width: "100%",  minHeight:' min-content', maxHeight: "100%",  overflow: 'auto'}}>
                     {
                         messenger.selectedDialog ?
                             (messenger.dialogMessages? messenger.dialogMessages.map((message: {messageId: string|null, files: string|null, text: string|null, firstName: string, userSenderId: string, createDate :any|null, updateDate: any|null}) =>
