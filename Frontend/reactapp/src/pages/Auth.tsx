@@ -17,12 +17,12 @@ const Auth = observer(() => {
     const [passwordCheck, setPasswordCheck] = useState('')
     const [error, setError] = useState('')
 
-
+    console.log(process.env.REACT_APP_API_URL)
     const accept = async () => {
         try {
             let data: any;
             if (isLogin){
-                data = await login(email,password)
+                data = await login(email, password)
             }
             else
             {
@@ -33,12 +33,13 @@ const Auth = observer(() => {
 
             }
             console.log(data)
-            user.setUser(data.id)
+            user.setUser({userId: data.id})
             user.setIsAuth(true)
             navigate(MAIN_ROUTE)
 
         } catch (e: any)
         {
+
             alert(e.response.data.message)
         }
     }
@@ -49,7 +50,7 @@ const Auth = observer(() => {
         >
             <div style={{width: 600}} className="p-5">
                 <h2 className="m-auto">{isLogin ? 'Вход' : 'Регистрация'}</h2>
-                <form className="d-flex flex-column" method={"post"}>
+                {/*<form className="d-flex flex-column" method={"post"}>*/}
                     <input
                         type={"text"}
                         className="mt-4"
@@ -111,8 +112,6 @@ const Auth = observer(() => {
                     >
 
                     </input>
-
-                </form>
             </div>
 
         </div>

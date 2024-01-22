@@ -1,7 +1,7 @@
 const { Client } = require("pg")
 const dotenv = require("dotenv")
 dotenv.config()
-
+const client = require('./db')
 //Класс для ответа getchats
 class getchatsAnswer {
     Count = 0;
@@ -58,7 +58,6 @@ const getchats = async (userid) => {
             password: process.env.PGPASSWORD,
             port: process.env.PGPORT
         })
-
         await client.connect()
 
         const query = {

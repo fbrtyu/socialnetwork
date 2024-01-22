@@ -11,8 +11,6 @@ import AppRouter from "./components/AppRouter";
 
 
 
-export
-
 function App() {
     const {user} = useContext(Context)
     // const {order} = useContext(Context)

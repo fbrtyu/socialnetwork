@@ -5,7 +5,7 @@ export default class UserStore{
     _user: any
     constructor() {
         this._isAuth = true
-        this._user = {userId: '2', image: null}
+        this._user = {userId:'2'}
         // makeAutoObservable(this)
     }
 

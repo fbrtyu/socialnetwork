@@ -1,9 +1,15 @@
-var express = require('express');
-var ws = require("./ws.js");
-var pg = require("./pg.js");
+const express = require('express');
+const ws = require("./ws.js");
+const pg = require("./pg.js");
+const cors = require('cors')
+const router = require('../BackendNodeJS/routes/index')
+const client = require('./db')
+const app = express();
+const PORT = process.env.PORT
 
-var app = express();
-
+app.use(cors())
+app.use(express.json())
+app.use('/api', router)
 //Путь для получения чатов пользователя по userid
 app.get('/getchats', async function(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -36,9 +42,21 @@ app.get('/getchatmessages', async function(req, res) {
     res.send(JSON.stringify(answer));
 })
 
-var server = app.listen(8080, function () {
-    var host = server.address().address;
-    var port = server.address().port;
-    console.log("Сервер работает на порту 8080");
-    ws.ws();
-});
+// var server = app.listen(8080, function () {
+//     var host = server.address().address;
+//     var port = server.address().port;
+//     console.log("Сервер работает на порту 8080");
+//
+// });
+ws.ws();
+const start = async () => {
+    try {
+        await client.connect();
+        app.listen(PORT, () => console.log(`server started on port ${PORT}`))
+    } catch (e) {
+
+
+        console.log(e)
+    }
+}
+start();
