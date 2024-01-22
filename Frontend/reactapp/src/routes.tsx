@@ -10,7 +10,7 @@ import Auth from "./pages/Auth";
 import MessengerPage from "./pages/MessengerPage";
 import Main from "./pages/Main";
 import Admin from "./pages/Admin";
-// import Admin from  "./pages/Admin";
+
 
 export  const authRoutes =  [
     {
@@ -21,10 +21,7 @@ export  const authRoutes =  [
         path: MESSENGER_ROTE,
         Component: MessengerPage
     },
-    {
-        path: MAIN_ROUTE,
-        Component: Main
-    }
+
 ]
 export  const publicRoutes = [
     {
@@ -36,13 +33,10 @@ export  const publicRoutes = [
         Component: Auth
     },
     {
-        path: MESSENGER_ROTE,
-        Component: MessengerPage
+        path: MAIN_ROUTE,
+        Component: Main
     }
-    // {
-    //     path: BUILD_ROUTE + '/:id',
-    //     Component: Build
-    // },
+
 
 
 ]

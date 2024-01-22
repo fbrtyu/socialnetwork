@@ -7,24 +7,6 @@ import MessageInput from "../components/MessageInput";
 import ChatList from "../components/ChatList";
 
 
-//WebSocket
-// const WS = new WebSocket('ws://localhost:9000');
-// WS.onopen = function () {
-//     console.log('Подключился');
-// };
-// //Функция для получения сообщений из Вебсокета
-// WS.onmessage = function (message) {
-//     console.log('Message: %s', message.data);
-//     trig = !trig
-// };
-//
-// function wsSendPing() {
-//     WS.send(JSON.stringify({ action: 'PING' }));
-// };
-
-//Функция для получения новых сообщений из БД по chatid
-
-
 const MessengerPage = observer(() => {
     //Получение новых сообщений из БД
 
@@ -212,18 +194,20 @@ const MessengerPage = observer(() => {
                         messenger.selectedDialog ?
                             (messenger.dialogMessages? messenger.dialogMessages.map((message: {messageId: string|null, files: string|null, text: string|null, firstName: string, userSenderId: string, createDate :any|null, updateDate: any|null}) =>
                                     <div  style={{display: "flex", alignItems: "center", minHeight:' min-content', marginRight: (userId() === message.userSenderId ? "5px": ""),
-                                        marginLeft: (userId() === message.userSenderId ? "" : "5px"),}} key={message.messageId}>
-                                        {/*//: (userId() === message.userSenderId ? "column": "column-reverse"*/}
+                                        marginLeft: (userId() === message.userSenderId ? "" : "5px"),}}
+                                          key={message.messageId}>
                                         <div style={{ display: 'flex', width: "50px", height: "50px", justifyContent: "center", alignItems: "center" }}>
                                             {
-                                                userId() === message.userSenderId ?
-                                                    null :
-                                                    messenger.dialogs.find((dialog: any) => dialog.dialogId = messenger.selectedDialog.dialogId)?.users.find((user: any)=> user.userId = message.userSenderId)?.image ?
-                                                        <img src={messenger.dialogs.find((dialog: any) => dialog.dialogId = messenger.selectedDialog.dialogId).users.find((user: any)=> user.userId = message.userSenderId).image} style={{ borderRadius: "50%" }} />
-                                                        :
-                                                        <div style={{ width: "90%", height: '90%', borderRadius: "50%", backgroundColor: "green",}} />
+                                                userId() === message.userSenderId?
+                                                    null
+                                                    :
+                                                // messenger.dialogs.find((dialog: any) => dialog.dialogId = messenger.selectedDialog.dialogId)?.users.find((user: any)=> user.userId = message.userSenderId)?.image ?
+                                                //         <img src={messenger.dialogs.find((dialog: any) => dialog.dialogId = messenger.selectedDialog.dialogId).users.find((user: any)=> user.userId = message.userSenderId).image} style={{ borderRadius: "50%" }} />
+                                                //         :
+                                                    <div style={{ width: "90%", height: '90%', borderRadius: "50%", backgroundColor: "green",}} />
 
                                             }
+                                            {/*Проверить на ошибки*/}
                                         </div>
                                         <div  style={
                                         {display: 'inline-block', background: (userId() === message.userSenderId ? "lightblue": "lightgreen"),

@@ -12,19 +12,32 @@ import {useLocation, useNavigate} from "react-router-dom";
 import Auth from "../pages/Auth";
 
 const NavBar = observer( () => {
-    const {user, order} = useContext(Context)
+    const {user} = useContext(Context)
     const navigate = useNavigate()
     const location = useLocation()
-    const isAuth = location.pathname === (LOGIN_ROUTE || REGISTRATION_ROUTE)
+    // const isAuth: boolean =  !!user.user//location.pathname === (LOGIN_ROUTE || REGISTRATION_ROUTE)
     const logOut = () => {
+        // console.log(isAuth)
         user.setUser({})
         user.setIsAuth(false)
     }
     return (
         <nav style={{backgroundColor: "#2BB98BFF"}}>
             <div onClick={() => navigate(MAIN_ROUTE)}>Главная</div>
-            <div onClick={() => navigate(MESSENGER_ROTE)}>Messenger</div>
-            <div onClick={() => navigate(LOGIN_ROUTE)}>Login</div>
+            {
+                user.isAuth ?
+                    <div>
+                        <div onClick={() => navigate(MESSENGER_ROTE)}>Messenger</div>
+                        <div onClick={() => navigate(ADMIN_ROUTE)}>Admin</div>
+                        <div onClick={() => logOut()}>Logout</div>
+                    </div>
+                    :
+                    <div>
+                        <div onClick={() => navigate(LOGIN_ROUTE)}>Sing in</div>
+                        <div onClick={() => navigate(REGISTRATION_ROUTE)}>Sing up</div>
+                    </div>
+            }
+
             {/*<div>*/}
             {/*    <a style={{color:'white'}} href={MAIN_ROUTE}>PCStore</a>*/}
             {/*    <div className={'me-0 ms-auto'} aria-controls={`offcanvasNavbar-expand-md`} />*/}

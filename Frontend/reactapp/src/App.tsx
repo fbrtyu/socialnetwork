@@ -8,10 +8,11 @@ import NavBar from "./components/NavBar";
 import {BrowserRouter} from "react-router-dom";
 import {JwtPayload} from "jwt-decode";
 import AppRouter from "./components/AppRouter";
+import {observer} from "mobx-react-lite";
 
 
 
-function App() {
+const App = observer(() => {
     const {user} = useContext(Context)
     // const {order} = useContext(Context)
 
@@ -55,6 +56,6 @@ function App() {
         </BrowserRouter>
     </div>
   );
-}
+})
 
 export default App;

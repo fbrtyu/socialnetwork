@@ -13,8 +13,9 @@ const ChatList = observer(() => {
                         style={{ display: "flex", cursor: "pointer", border: "solid 1px black", width: "100%", height: "50px", alignItems: "center"}}
                         key={dialog.dialogId}
                         onClick={async () => {
-                            if (messenger.selectedDialog !== dialog)
+                            if (messenger.selectedDialog !== dialog) {
                                 messenger.setSelectedDialog(dialog)
+                            }
                         }
                         }
                     >

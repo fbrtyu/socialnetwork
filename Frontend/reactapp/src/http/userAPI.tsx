@@ -13,7 +13,6 @@ export const registration = async(email: string, password: string, name: string)
 }
 
 export const login = async(email: string, password: string) => {
-    console.log($host)
     const {data} = await $host.post('api/user/login', {login: email, password})
     localStorage.setItem('token', data.token)
     localStorage.setItem('refreshToken', data.refreshToken)

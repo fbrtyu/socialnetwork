@@ -17,7 +17,7 @@ const Auth = observer(() => {
     const [passwordCheck, setPasswordCheck] = useState('')
     const [error, setError] = useState('')
 
-    console.log(process.env.REACT_APP_API_URL)
+
     const accept = async () => {
         try {
             let data: any;
