@@ -54,9 +54,8 @@ const start = async () => {
         await client.connect();
         app.listen(PORT, () => console.log(`server started on port ${PORT}`))
     } catch (e) {
-
-
         console.log(e)
     }
+    //await client.end();
 }
 start();
