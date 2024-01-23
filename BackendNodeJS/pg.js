@@ -2,6 +2,7 @@ const { Client } = require("pg")
 const dotenv = require("dotenv")
 dotenv.config()
 const client = require('./db')
+
 //Класс для ответа getchats
 class getchatsAnswer {
     Count = 0;
@@ -24,6 +25,42 @@ class getchatMessagesAnswer {
     }
 }
 
+//Функция для получения таблицы userid - chatid
+async function getuseridfromchatid(chatid) {
+    try {
+        const client = new Client({
+            user: process.env.PGUSER,
+            host: process.env.PGHOST,
+            database: process.env.PGDATABASE,
+            password: process.env.PGPASSWORD,
+            port: process.env.PGPORT
+        })
+
+        await client.connect()
+
+        const query = {
+            text: 'SELECT userid FROM chatuserinfo WHERE chatid = $1',
+            values: [chatid],
+        }
+        const res = await client.query(query)
+        //console.log(res.rows)
+        await client.end()
+
+        let arrayuseridinchat = [];
+
+        for (let i = 0; i < res.rowCount; i++) {
+            arrayuseridinchat.push(res.rows[i]);
+        }
+
+        //console.log(res.rowCount);
+        //console.log(arrayuseridinchat);
+
+        return arrayuseridinchat;
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 //Пока просто тестовая функция для выполнения INSERT в БД
 const pgsendmessage = async (data) => {
     try {
@@ -41,7 +78,7 @@ const pgsendmessage = async (data) => {
             values: [data.chatid, data.usersenderid, new Date(), new Date(), data.data],
         }
         const res = await client.query(query)
-        console.log(res.rows[0])
+        //console.log(res.rows[0])
         await client.end()
     } catch (error) {
         console.log(error)
@@ -77,7 +114,7 @@ const getchats = async (userid) => {
                 text: 'SELECT userid, firstname FROM userinfo INNER JOIN (SELECT chatid, userid FROM chat INNER JOIN chatuserinfo ON (chat.id = chatuserinfo.chatid) WHERE chatid = $1) ON (userinfo.id = userid)',
                 values: [res.rows[rc - 1].chatid],
             }
-    
+
             const res2 = await client.query(query2)
             let chatusers = res2.rows
 
@@ -85,7 +122,7 @@ const getchats = async (userid) => {
                 text: 'SELECT * FROM message WHERE message.chatid = $1 ORDER BY createdate DESC LIMIT 1',
                 values: [res.rows[rc - 1].chatid],
             }
-    
+
             const res3 = await client.query(query3)
             let lastchatmessage = res3.rows
 
@@ -141,3 +178,5 @@ module.exports.getonechatmessages = getonechatmessages;
 module.exports.getchats = getchats;
 
 module.exports.pgsendmessage = pgsendmessage;
+
+module.exports.getuseridfromchatid = getuseridfromchatid;

@@ -67,7 +67,7 @@ const MessengerPage = observer(() => {
     // }
     useEffect(() => {
         ws.current = new WebSocket("ws://localhost:9000"); // создаем ws соединение
-        ws.current.onopen = () => setStatus("Соединение открыто");	// callback на ивент открытия соединения
+        ws.current.onopen = () => {setStatus("Соединение открыто"); ws.current.send(JSON.stringify({ action: 'CONNECT', userid: userId() }));}	// callback на ивент открытия соединения
         ws.current.onclose = () => setStatus("Соединение закрыто");
         getWSMessages()
     }, [ws]);
