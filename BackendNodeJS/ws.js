@@ -4,62 +4,48 @@ function ws() {
     const WebSocket = require('ws');
     const wsServer = new WebSocket.Server({ port: 9000 });
     const activeClients = [];
-    let index = 0;
+    let index = 0; //Нужно для корректного удаления клиента, который отключился (закрыл вкладку)
     let arrayuseridinchat = [];
-    //let arrayuserid = [];
+    let arrayallactiveuserid = []; //Нужно для хранения всех userid, которые активны в вебсокете, чтобы не дублировать записи в массиве активных пользователей (activeClients) при обновлении страницы или переходе между ними
 
+    //Событие срабатывает при подключении клиента
     wsServer.on('connection', onConnect);
 
+    //Функция срабатывает при подключении нового клиента (даже если просто обновить или переключиться между веб-страницами)
     function onConnect(wsClient) {
 
-        wsClient.on('message', async function (message) {
-            // wsServer.clients.forEach(function each(client) {    
-            //     if (client !== ws && client.readyState === WebSocket.OPEN) {
-            //         const jsonMessage = JSON.parse(message);
-            //         client.send(jsonMessage.data);
-            //     }
-            // });
-
+        //Событие срабатывает при закрытии соединения (закрытии вкладки браузера)
+        wsClient.on('close', function () {
             activeClients.forEach(function each(client) {
-                for (let i = 0; i < arrayuseridinchat.length; i++) {
-                    if (client.readyState === WebSocket.OPEN && client.uniqueID === arrayuseridinchat[i].userid) {
-                        //const jsonMessage = JSON.parse(message);
-                        client.send(message);
+                if (client.readyState === WebSocket.CLOSED) {
+                    console.log("User close connection. User with id " + activeClients[index].uniqueID + " delete from array!");
+                    let indexid = arrayallactiveuserid.indexOf(activeClients[index].uniqueID);
+                    activeClients.splice(index, 1);
+                    if (indexid !== -1) {
+                        arrayallactiveuserid.splice(index, 1);
                     };
+                    console.log("Active users: " + activeClients.length);
                 };
-
-                // if (client.readyState === WebSocket.OPEN && client.uniqueID == 6) {
-                //     const jsonMessage = JSON.parse(message);
-                //     client.send(jsonMessage.data);
-                // };
+                index++;
             });
+            index = 0;
+        });
 
-            wsClient.on('close', function () {
-                activeClients.forEach(function each(client) {
-                    if (client.readyState === WebSocket.CLOSED) {
-                        console.log("User close connection. User with id " + activeClients[index].uniqueID + " delete from array!");
-                        activeClients.splice(index, 1);
-                        console.log("Active users: " + activeClients.length);
-                    };
-                    index++;
-                });
-                index = 0;
-            });
-
+        //Событие срабатывает при получении сообщения
+        wsClient.on('message', async function (message) {
+            //Работает при получении новых сообщений
             try {
                 const jsonMessage = JSON.parse(message);
                 switch (jsonMessage.action) {
                     case 'CONNECT':
                         //Выполнение функции, которая регистрирует нового пользователя вебсокета в массиве пользователей и даёт ему id из БД
-                        //arrayuserid.push(jsonMessage.userid);
-                        //wsClient.uniqueID = arrayuserid.pop();
                         wsClient.uniqueID = jsonMessage.userid;
-                        if (activeClients.find(client => {client === wsClient})) { //activeClients.find(client => {client.uniqueID === jsonMessage.userid})
-
+                        if (arrayallactiveuserid.find((newid) => { return newid === jsonMessage.userid })) {
+                            console.log("Такой клиент уже есть");
                         } else {
+                            arrayallactiveuserid.push(jsonMessage.userid);
                             activeClients.push(wsClient);
-                        }
-                        //activeClients.push(wsClient);
+                        };
                         console.log("User with id " + jsonMessage.userid + " connected!");
                         console.log("Active users: " + activeClients.length);
                         break;
@@ -68,7 +54,15 @@ function ws() {
                         arrayuseridinchat = await pg.getuseridfromchatid(jsonMessage.chatid);
                         console.log(arrayuseridinchat.length);
 
-                        wsClient.send(message);
+                        activeClients.forEach(function each(client) {
+                            for (let i = 0; i < arrayuseridinchat.length; i++) {
+                                //Условие при котором нет дублирования сообщения самому себе
+                                if (wsClient !== client && client.readyState === WebSocket.OPEN && client.uniqueID === arrayuseridinchat[i].userid) {
+                                    const jsonMessage = JSON.parse(message); //Если так отправлять сообщения, то функционал работает, но в интерфейсе не всё отображается. Если как-то по другому отправлять, то функционал некоторый начинает работать некорректно
+                                    client.send(jsonMessage.data);
+                                };
+                            };
+                        });
 
                         //Выполнение функции, которая отправляет запрос в БД
                         await pg.pgsendmessage(jsonMessage);
@@ -84,7 +78,7 @@ function ws() {
                 }
             } catch (error) {
                 console.log('Ошибка', error);
-            }
+            };
         });
     }
     console.log('Сервер запущен на 9000 порту');
