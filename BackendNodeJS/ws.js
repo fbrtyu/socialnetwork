@@ -35,7 +35,7 @@ function ws() {
         wsClient.on('message', async function (message) {
             //Работает при получении новых сообщений
             try {
-                const jsonMessage = JSON.parse(message);
+                let jsonMessage = JSON.parse(message);
                 switch (jsonMessage.action) {
                     case 'CONNECT':
                         //Выполнение функции, которая регистрирует нового пользователя вебсокета в массиве пользователей и даёт ему id из БД
@@ -58,8 +58,13 @@ function ws() {
                             for (let i = 0; i < arrayuseridinchat.length; i++) {
                                 //Условие при котором нет дублирования сообщения самому себе
                                 if (wsClient !== client && client.readyState === WebSocket.OPEN && client.uniqueID === arrayuseridinchat[i].userid) {
-                                    const jsonMessage = JSON.parse(message); //Если так отправлять сообщения, то функционал работает, но в интерфейсе не всё отображается. Если как-то по другому отправлять, то функционал некоторый начинает работать некорректно
-                                    client.send(jsonMessage.data);
+
+                                    //Если так отправлять сообщения, то функционал работает, но в интерфейсе не всё отображается
+                                    //Если как-то по другому отправлять, то функционал некоторый начинает работать некорректно
+                                    client.send(jsonMessage.data); //Так почти работает
+                                    
+                                    //Так я отправляю нормальный JSON файл, который можно распарсить с помощью JSON.Parse(полученные данные из WS)
+                                    //client.send(JSON.stringify(jsonMessage)); //Но так не особо работает ибо логика на фронтенде другая
                                 };
                             };
                         });

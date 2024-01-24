@@ -76,6 +76,14 @@ const MessengerPage = observer(() => {
         ws.current.onmessage = (message: MessageEvent<any>) => {
             // setFlagWS(!flagWS)
             setLatestMessage(message)
+
+            //Почти работает (если на сервере использовать client.send(jsonMessage.data);), но ты из БД качаешь новые сообщения (поэтому работает),
+            //а в вебсокете тогда будет только текст передаваться, чего не достаточно, если не качать, а получать новые из вебсокета
+
+            //Не особо работает, если на сервере использовать client.send(JSON.stringify(jsonMessage));
+            //Но зато в вебсокете ты получаешь обычный JSON, который можно распарсить с помощью JSON.Parse(полученные данные из WS)
+            //Как тут переделать логику на получение сообщения из сокета, а не заново скачивать из БД я хз
+            //Но передать нормальный JSON могу и получить его тут, и распарсить
             console.log('Message: %s', message.data);
         }
     }, [latestMessage])
@@ -97,7 +105,7 @@ const MessengerPage = observer(() => {
     useEffect(() => {
         if (!messenger.selectedDialog)
             return
-        getChatMessages(messenger.selectedDialog.dialogId, userId()).then(data => {
+        getChatMessages(messenger.selectedDialog.dialogId, userId()).then(data => { //Вот тут бы не скачивать заново из БД, а брать из вебсокета
             console.log(data)
             console.log("Вызов")
             // console.log(flagWS)
