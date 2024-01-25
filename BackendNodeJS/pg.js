@@ -70,11 +70,12 @@ const pgsendmessage = async (data) => {
         await client.connect();
 
         const query = {
-            text: 'INSERT INTO message(chatid, usersenderid, createdate, updatedate, text) VALUES($1, $2, $3, $4, $5)',
+            text: 'INSERT INTO message(chatid, usersenderid, createdate, updatedate, text) VALUES($1, $2, $3, $4, $5) RETURNING *',
             values: [data.chatid, data.usersenderid, new Date(), new Date(), data.data],
         };
-        await client.query(query);
+        const res = await client.query(query);
         await client.end();
+        return res;
     } catch (error) {
         console.log(error);
     }

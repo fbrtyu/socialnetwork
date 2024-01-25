@@ -56,7 +56,8 @@ function ws() {
                         console.log(arrayuseridinchat.length);
 
                         //Выполнение функции, которая отправляет запрос в БД
-                        await pg.pgsendmessage(jsonMessage);
+                        // const request = await pg.pgsendmessage(jsonMessage);
+                        const result = await pg.pgsendmessage(jsonMessage);
 
                         activeClients.forEach(function each(client) {
                             for (let i = 0; i < arrayuseridinchat.length; i++) {
@@ -68,7 +69,7 @@ function ws() {
                                     //client.send(jsonMessage.data); //Так почти работает
                                     
                                     //Так я отправляю нормальный JSON файл, который можно распарсить с помощью JSON.Parse(полученные данные из WS)
-                                    client.send(JSON.stringify(jsonMessage)); //Но так не особо работает ибо логика на фронтенде другая
+                                    client.send(JSON.stringify(result.rows[0])); //Но так не особо работает ибо логика на фронтенде другая
                                 };
                             };
                         });
