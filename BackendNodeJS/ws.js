@@ -40,7 +40,8 @@ function ws() {
                     case 'CONNECT':
                         //Выполнение функции, которая регистрирует нового пользователя вебсокета в массиве пользователей и даёт ему id из БД
                         wsClient.uniqueID = jsonMessage.userid;
-                        if (arrayallactiveuserid.find((newid) => { return newid === jsonMessage.userid })) {
+                        if (arrayallactiveuserid.find((newid) => newid === jsonMessage.userid)) {
+                            activeClients[activeClients.findIndex(client => client.uniqueID === jsonMessage.userid)] = wsClient;
                             console.log("Такой клиент уже есть");
                         } else {
                             arrayallactiveuserid.push(jsonMessage.userid);

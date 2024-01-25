@@ -1,9 +1,22 @@
 import {makeAutoObservable} from "mobx";
 
-
+interface DialogMessage {
+    [date: string]: any,
+    message: {
+        messageId: string|null,
+        files: string|null,
+        text: string|null,
+        userSenderId: string,
+        firstName: string,
+        createDate: any|null,
+        updateDate: any|null
+    }
+}
 export default class MessengerStorage{
     _dialogs: {dialogId: string, dialogName: string|null, userCreatorId: string, dialogImage: string| null, users: {userId: string, fN: string, image: string|null}[]}[];
-    _dialogMessages: {messageId: string|null, files: string|null, text: string|null, userSenderId: string, firstName: string, createDate: any|null, updateDate: any|null}[]|null;
+    _dialogMessages: DialogMessage[]|null;
+    _dialogMessagesWS: {messageId: string|null, files: string|null, text: string|null, userSenderId: string, firstName: string, createDate: any|null, updateDate: any|null}[]|null;
+
     _selectedDialog: {dialogId: string, dialogName: string}|null
     constructor() {
         this._dialogs = [
@@ -26,6 +39,9 @@ export default class MessengerStorage{
             //     files: null, date: 126},
             // {messageId: '5', userId: '5432', text: 'Sample Text', files: null, date: 127},
         ]
+        this._dialogMessagesWS = [
+
+        ]
         this._selectedDialog = null
         //
         // this._page = 1
@@ -38,8 +54,11 @@ export default class MessengerStorage{
     setDialogs(dialogs: []) {
         this._dialogs = dialogs
     }
-    setDialogMessages(messages: {messageId: string|null, files: string|null, text: string|null, userSenderId: string, firstName: string, createDate :any|null, updateDate: any|null}[]) {
+    setDialogMessages(messages: DialogMessage[]|null) {
         this._dialogMessages = messages
+    }
+    setDialogMessagesWS(messages: {messageId: string|null, files: string|null, text: string|null, userSenderId: string, firstName: string, createDate :any|null, updateDate: any|null}[]) {
+        this._dialogMessagesWS = messages
     }
     // pushDialogMessages(message:{messageId: string|null, files: string|null, text: string|null, userId: string, createDate :any|null, updateDate: any|null})
     // {
