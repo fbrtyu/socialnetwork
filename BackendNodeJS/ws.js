@@ -54,23 +54,23 @@ function ws() {
                         arrayuseridinchat = await pg.getuseridfromchatid(jsonMessage.chatid);
                         console.log(arrayuseridinchat.length);
 
+                        //Выполнение функции, которая отправляет запрос в БД
+                        await pg.pgsendmessage(jsonMessage);
+
                         activeClients.forEach(function each(client) {
                             for (let i = 0; i < arrayuseridinchat.length; i++) {
                                 //Условие при котором нет дублирования сообщения самому себе
-                                if (wsClient !== client && client.readyState === WebSocket.OPEN && client.uniqueID === arrayuseridinchat[i].userid) {
+                                if (client.readyState === WebSocket.OPEN && client.uniqueID === arrayuseridinchat[i].userid) { //wsClient !== client Если добавить, то не будет дублирования в сокете сообщения своего
 
                                     //Если так отправлять сообщения, то функционал работает, но в интерфейсе не всё отображается
                                     //Если как-то по другому отправлять, то функционал некоторый начинает работать некорректно
-                                    client.send(jsonMessage.data); //Так почти работает
+                                    //client.send(jsonMessage.data); //Так почти работает
                                     
                                     //Так я отправляю нормальный JSON файл, который можно распарсить с помощью JSON.Parse(полученные данные из WS)
-                                    //client.send(JSON.stringify(jsonMessage)); //Но так не особо работает ибо логика на фронтенде другая
+                                    client.send(JSON.stringify(jsonMessage)); //Но так не особо работает ибо логика на фронтенде другая
                                 };
                             };
                         });
-
-                        //Выполнение функции, которая отправляет запрос в БД
-                        await pg.pgsendmessage(jsonMessage);
                         break;
                     case 'PING':
                         setTimeout(function () {
