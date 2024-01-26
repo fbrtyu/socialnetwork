@@ -26,16 +26,19 @@ const App = observer(() => {
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-            // setTimeout(() => {
-            //     check().then(data => {
-            //         const {userId} = data
-            //             user.setUser(userId)
-            //             user.setIsAuth(true)
-            //
-            //
-            //     }).finally(() => setLoading(false))
-            //
-            // }, 1000)
+            check().then(data => {
+                    if (data.error)
+                        console.log(data.error)
+                    else
+                    {
+                        const {id} = data
+                        user.setUser({userId: id})
+                        user.setIsAuth(true)
+                    }
+
+
+
+            }).finally(() => setLoading(false))
         }
         ,[])
 
@@ -46,12 +49,12 @@ const App = observer(() => {
     <div className="App" style={{display: "flex", flexDirection: "column", maxWidth: "100vw", height: "100svh", background: "#a6a1a1"}}>
         <BrowserRouter>
             <NavBar/>
-
             {/*<nav style={{minWidth: "100%", height: "50px", background: "gray", marginBottom: "5px",display: "flex"}}></nav>*/}
-            <div style={{display: "flex", marginLeft: "auto", marginRight: "auto"}}>
-                {/*<SideMenu></SideMenu>*/}
-                {/*<MessegerPage></MessegerPage>*/}
-            </div>
+            {/*<div style={{display: "flex", marginLeft: "auto", marginRight: "auto"}}>*/}
+            {/*    /!*<SideMenu></SideMenu>*!/*/}
+            {/*    /!*<MessegerPage></MessegerPage>*!/*/}
+            {/*</div>*/}
+            <div style={{display: "flex", maxHeight: "100%"}}></div>
             <AppRouter></AppRouter>
         </BrowserRouter>
     </div>

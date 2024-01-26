@@ -18,6 +18,8 @@ const NavBar = observer( () => {
     // const isAuth: boolean =  !!user.user//location.pathname === (LOGIN_ROUTE || REGISTRATION_ROUTE)
     const logOut = () => {
         // console.log(isAuth)
+        localStorage.removeItem("token")
+        localStorage.removeItem("refreshToken")
         user.setUser({})
         user.setIsAuth(false)
     }
@@ -37,41 +39,6 @@ const NavBar = observer( () => {
                         <div onClick={() => navigate(REGISTRATION_ROUTE)}>Sing up</div>
                     </div>
             }
-
-            {/*<div>*/}
-            {/*    <a style={{color:'white'}} href={MAIN_ROUTE}>PCStore</a>*/}
-            {/*    <div className={'me-0 ms-auto'} aria-controls={`offcanvasNavbar-expand-md`} />*/}
-            {/*    /!*<div*!/*/}
-            {/*    /!*    id={`offcanvasNavbar-expand-md`}*!/*/}
-            {/*    /!*    aria-labelledby={`offcanvasNavbarLabel-expand-md`}*!/*/}
-            {/*    /!*    // placement="end"*!/*/}
-            {/*    /!*>*!/*/}
-            {/*            {user.isAuth ?*/}
-            {/*                <nav className="ml-auto">*/}
-            {/*                    /!*<Nav.Link className={"text-md-center"} onClick={() => navigate(MAIN_ROUTE)}>Каталог</Nav.Link>*!/*/}
-            {/*                    /!*<input type={"button"} className={"buttonStyle2 ms-2"} onClick={() => navigate(ORDER_ROUTE)}>Корзина</input>*!/*/}
-            {/*                    <input type={"button"} className={"buttonStyle2 ms-2"} onClick={() => navigate(ADMIN_ROUTE)}>Панель изменений</input>*/}
-            {/*                    <input type={"button"} className={"buttonStyle2 ms-2"} onClick={() =>*/}
-            {/*                    {*/}
-            {/*                        navigate(MESSENGER_ROTE)*/}
-            {/*                        logOut()*/}
-
-            {/*                    }}*/}
-            {/*                    >Выход</input>*/}
-            {/*                </nav>*/}
-            {/*                :*/}
-            {/*                <nav className="ml-auto">*/}
-            {/*                    <a onClick={() => navigate(MAIN_ROUTE)}>Каталог</a>*/}
-            {/*                    <a onClick={() => navigate(MESSENGER_ROTE)}>Конфигуратор</a>*/}
-            {/*                    {!isAuth ?*/}
-            {/*                        <input className={"buttonStyle2"} onClick={() => navigate(LOGIN_ROUTE)}>Авторизация</input>*/}
-            {/*                        :*/}
-            {/*                        null}*/}
-            {/*                </nav>*/}
-            {/*            }*/}
-
-            {/*    /!*</div>*!/*/}
-            {/*</div>*/}
         </nav>
 
     );

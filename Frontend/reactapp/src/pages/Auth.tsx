@@ -32,7 +32,6 @@ const Auth = observer(() => {
             }
             if (data.error)
                 throw new Error(data.error)
-            console.log(data)
             user.setUser({userId: data.id})
             user.setIsAuth(true)
             navigate(MAIN_ROUTE)
@@ -109,10 +108,20 @@ const Auth = observer(() => {
                         onClick={() => accept()}
                         className={"mt-2 buttonStyle"}
                         value={isLogin ? 'Войти' : 'Зарегестрироваться'}
+                        style={{marginBottom:"10px"}}
                     >
 
                     </input>
+                {
+                    error?
+                        <div style={{color: "red"}}>{error}</div>
+                        :
+                        null
+
+                }
             </div>
+
+
 
         </div>
     );

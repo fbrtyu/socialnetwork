@@ -93,15 +93,15 @@ class UserController {
 
     async check(req, res) {
         try {
-            if (!req.user) return res.json({message: "Аутентификация не пройдена"})
+            if (!req.user) return res.json({error: "Аутентификация не пройдена"})
             const accessToken = await generateJWT(req.user.id)
             const refreshToken = await generateRefJWT(req.user.id, accessToken)
             const result = insertRefreshToken(req.user.id, refreshToken)
-            if (!result) return res.json({message: "Ошибка токена"})
+            if (!result) return res.json({error: "Ошибка токена"})
             return res.json({token: accessToken, refreshToken})
         }
         catch (e) {
-            return res.json({message: e})
+            return res.json({error: e.message})
         }
     }
 }

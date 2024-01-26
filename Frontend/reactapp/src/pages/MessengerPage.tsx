@@ -117,7 +117,7 @@ const MessengerPage = observer(() => {
     // white-space: nowrap; /* paragraph to one line */
     // overflow:hidden; /* older browsers */
     return (
-        <div style={{ display: "flex", justifyContent: "center", marginTop: "20px", height: '100%',maxHeight: "100%", marginBottom:"20px", boxSizing:"border-box"}}>
+        <div style={{ display: "flex", flex: "1", justifyContent: "center", paddingTop: "20px", height: '100%', maxHeight: "100%", paddingBottom:"20px", boxSizing:"border-box",}}>
             <ChatList></ChatList>
             <DialogWindow sendingMessage={sendingMessage} textMessage={textMessage} setTextMessage={setTextMessage}></DialogWindow>
         </div>

@@ -11,11 +11,11 @@ module.exports = async function (req, res, next) {
     try {
         const token = req.headers.authorization.split(' ')[1]
         if (!token){
-            return res.status(401).json({message: "Аутенификация не пройдена"})
+            throw new Error("Аутенификация не пройдена")//res.status(401).json({message: "Аутенификация не пройдена"})
         }
         const alg = 'RS256'
-
-        const publicKey = await jwt.importPKCS8(`${process.env.SECRET_KEY}` , alg)
+        // console.log(req.headers.refreshtoken)
+        const privateKey = await jwt.importPKCS8(`${process.env.SECRET_KEY}` , alg)
 
         const options = {
             issuer: 'urn:example:issuer',
@@ -24,29 +24,30 @@ module.exports = async function (req, res, next) {
         let isTimeOut = false;
 
         const { payload } = await jwt
-            .jwtVerify(token, publicKey, options)
+            .jwtVerify(token, privateKey, options)
             .catch(async (error) => {
                 if (error?.code === 'ERR_JWT_EXPIRED') {
                     return isTimeOut = true
                 }
                 else throw error
             })
-        if (!await jwt.jwtVerify(req.body.refreshToken, publicKey)) return res.status(401).json({message: "Рефрешь токен устарел"})
-        const text = 'SELECT * FROM userToken WHERE id = $1'
+        if (!await jwt.jwtVerify(req.headers.refreshtoken, privateKey)) {
+            // console.log("refToken " + req.headers.refreshtoken,)
+            return new Error("Рефрешь токен устарел")//res.status(401).json({message: "Рефрешь токен устарел"})
+        }
+        const text = 'SELECT * FROM usertoken WHERE userid = $1'
         const pl = await jwt.decodeJwt(token)
         const result = await client.query(text, [pl.id])
-        if (!result.rows) res.status(401).json({message: "Данный токен не зарегестрирован"})
-        if (!result.rows.find(r => bcrypt.compareSync(req.body.refreshToken, r.token))) return res.status(401).json({message: "Токен не прошел проверку"})
+        if (!result.rows) throw new Error("Данный токен не зарегестрирован")//res.status(401).json({message: "Данный токен не зарегестрирован"})
+        if (!result.rows.find(r => bcrypt.compareSync(req.headers.refreshtoken, r.hashtoken))) return res.status(401).json({message: "Токен не прошел проверку"})
         req.user = pl
         next()
     }
     catch (e) {
-        // console.error(e)
-        res.status(401).json({message: e})
+        console.error(e)
+        return res.json({error: e.message})
     }
     finally {
 
     }
-
-
 }
