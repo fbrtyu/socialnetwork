@@ -2,17 +2,30 @@ import React from 'react';
 
 const MessageInput = (props: any) => {
     return (
-        <div style={{ display: "flex", marginBottom: "0px", marginTop: "auto", background: "yellowgreen", width: "100%", maxHeight: "120px", paddingTop: "", alignItems: "center" }}>
+        <div style={{ display: "flex", marginBottom: "0px", marginTop: "auto", background: "yellowgreen", width: "100%", maxHeight: "200px", paddingTop: "", alignItems: "center" }}>
 
             <div style={{ marginBottom: "0px", marginTop: "auto", width: "30px", height: "30px", marginLeft: "auto" }}>X</div>
-            <div contentEditable={"true"} style={{ padding: "3px", borderRadius: "5px", background: "yellow", width: "450px", minHeight: "30px", maxHeight: "120px", resize: "none", marginTop: "5px", marginBottom: "5px", overflowX: "hidden", overflowY: "auto", textAlign: "start", boxSizing: "border-box" }}
-                 onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
-                     props.setTextMessage(e.currentTarget.textContent)
-                 }}
-                 suppressContentEditableWarning={true}
+            <textarea
+                onChange={(e) =>
+                {
+                    props.setTextMessage(e.target.value)
+                    e.target.style.height = 'auto';
+
+                    e.target.style.height = (e.target.scrollHeight) + 'px';//////console.log(this.scrollHeight);
+                }
+            }
+                      style={{ padding: "3px",
+                          borderRadius: "5px",
+                          background: "yellow",
+                          width: "450px", minHeight: "80px",
+                          maxHeight: "180px", resize: "none",
+                          marginTop: "5px", marginBottom: "5px",
+                          overflowX: "hidden", overflowY: "auto",
+                          textAlign: "start", boxSizing: "border-box" }}
+                      value={props.textMessage}
             >
-                {props.textMessage}
-            </div>
+
+            </textarea>
             <input
                 type={"button"}
                 value={"X"}

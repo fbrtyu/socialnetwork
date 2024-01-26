@@ -26,12 +26,12 @@ const Auth = observer(() => {
             }
             else
             {
-                if (password === passwordCheck)
-                    data = await registration(email, password, name)
-                else
-                    setError('Пароли не совпадают')
-
+                if (password !== passwordCheck)
+                    throw new Error('Пароли не совпадают')
+                data = await registration(email, password, name)
             }
+            if (data.error)
+                throw new Error(data.error)
             console.log(data)
             user.setUser({userId: data.id})
             user.setIsAuth(true)
@@ -39,21 +39,24 @@ const Auth = observer(() => {
 
         } catch (e: any)
         {
-
-            alert(e.response.data.message)
+            console.error(e.message)
+            setError(e.message)//(e.response.data.message)
         }
     }
     return (
         <div
-            className={"d-flex justify-content-center align-items-center"}
-            style={{height: window.innerHeight - 54}}
+            // className={"d-flex justify-content-center align-items-center"}
+            // style={{height: window.innerHeight - 54}}
+            style={{display: "flex", justifyContent: "center", alignItems: "center", height: "100%"}}
         >
-            <div style={{width: 600}} className="p-5">
+            <div style={{display: "flex", flexDirection: "column", width: 500, height: 400, background: "#ffffff", borderRadius: "5%",  justifyContent: "center", alignItems: "center",
+                boxSizing: "border-box",
+                paddingBottom: "20px"}}>
                 <h2 className="m-auto">{isLogin ? 'Вход' : 'Регистрация'}</h2>
                 {/*<form className="d-flex flex-column" method={"post"}>*/}
                     <input
                         type={"text"}
-                        className="mt-4"
+                        style={{marginBottom:"5px"}}
                         placeholder="Email"
                         value={email}
                         onChange={e => setEmail(e.target.value)}
@@ -63,7 +66,7 @@ const Auth = observer(() => {
                         :
                         <input
                             type={"text"}
-                            className="mt-4"
+                            style={{marginBottom:"5px"}}
                             placeholder="Имя"
                             value={name}
                             required
@@ -72,8 +75,8 @@ const Auth = observer(() => {
 
                     }
                     <input
-                        className="mt-4"
                         placeholder="Пароль"
+                        style={{marginBottom:"5px"}}
                         value={password}
                         type={"password"}
                         required
@@ -83,8 +86,8 @@ const Auth = observer(() => {
                         null
                         :
                         <input
-                            className="mt-4"
                             placeholder="Повторите пароль"
+                            style={{marginBottom:"5px"}}
                             value={passwordCheck}
                             type={"password"}
                             onChange={e => setPasswordCheck(e.target.value)}
@@ -92,23 +95,20 @@ const Auth = observer(() => {
 
                     }
 
-                    <div>
-                        {isLogin ?
-                            <div className={"d-flex mt-2 justify-content-between"}>
-                                <div onClick={() => navigate(REGISTRATION_ROUTE)}>Регистрация</div>
-                            </div>
-                            :
-                            <div className={"d-flex mt-2 justify-content-between"}>
-                                <div onClick={() => navigate(LOGIN_ROUTE)}>Есть аккаунт? Войдите</div>
-                            </div>
-                        }
 
-                    </div>
+                            <div style={{marginBottom:"10px"}}>
+                                {isLogin ?
+                                    <div onClick={() => navigate(REGISTRATION_ROUTE)}>Регистрация</div>
+                                    :
+                                    <div onClick={() => navigate(LOGIN_ROUTE)}>Есть аккаунт? Войдите</div>
+                                }
+                            </div>
+
                     <input
                         type = {"submit"}
                         onClick={() => accept()}
                         className={"mt-2 buttonStyle"}
-                        value={isLogin ? 'Войти' : 'Зарегистрироваться'}
+                        value={isLogin ? 'Войти' : 'Зарегестрироваться'}
                     >
 
                     </input>

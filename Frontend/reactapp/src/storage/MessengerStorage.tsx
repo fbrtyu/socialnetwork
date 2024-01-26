@@ -1,43 +1,19 @@
 import {makeAutoObservable} from "mobx";
+import {Dialog, DialogMessage, SelectedDialog} from "../interfaces/Imessenger";
 
-interface DialogMessage {
-    [date: string]: any,
-    message: {
-        messageId: string|null,
-        files: string|null,
-        text: string|null,
-        userSenderId: string,
-        firstName: string,
-        createDate: any|null,
-        updateDate: any|null
-    }
-}
+
 export default class MessengerStorage{
-    _dialogs: {dialogId: string, dialogName: string|null, userCreatorId: string, dialogImage: string| null, users: {userId: string, fN: string, image: string|null}[]}[];
+    _dialogs: Dialog[]|null;
     _dialogMessages: DialogMessage[]|null;
     _dialogMessagesWS: {messageId: string|null, files: string|null, text: string|null, userSenderId: string, firstName: string, createDate: any|null, updateDate: any|null}[]|null;
 
-    _selectedDialog: {dialogId: string, dialogName: string}|null
+    _selectedDialog: SelectedDialog|null
     constructor() {
         this._dialogs = [
-            // {dialogId: "1", dialogName: null, dialogImage: null, users: [
-            //         {userId: '1234', fN: "Александр", image: null},
-            //         {userId: '5432', fN: "Илья", image: null},
-            //     ]
-            // },
-            // {dialogId: "2", dialogName: null, dialogImage: null, users: [
-            //         {userId: '1234', fN: "Александр", image: null},
-            //         {userId: '2342', fN: "Вова", image: null},
-            //     ]
-            // },
+
         ]
         this._dialogMessages = [
-            // {messageId: '1', userId: '1231', text: 'asdwads', files: null, date: 123},
-            // {messageId: '2', userId: '5432', text: 'Sample Text', files: null, date: 124},
-            // {messageId: '3', userId: '1231', text: 'asdwads', files: null, date: 125},
-            // {messageId: '4', userId: '5432', text: 'Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Many Text',
-            //     files: null, date: 126},
-            // {messageId: '5', userId: '5432', text: 'Sample Text', files: null, date: 127},
+
         ]
         this._dialogMessagesWS = [
 
@@ -51,7 +27,7 @@ export default class MessengerStorage{
         makeAutoObservable(this)
     }
 
-    setDialogs(dialogs: []) {
+    setDialogs(dialogs: Dialog[]|null) {
         this._dialogs = dialogs
     }
     setDialogMessages(messages: DialogMessage[]|null) {
@@ -65,8 +41,7 @@ export default class MessengerStorage{
     //     this._dialogMessages.push(message)
     // }
 
-
-    setSelectedDialog(selected: {dialogId: string, dialogName: string}|null){
+    setSelectedDialog(selected: SelectedDialog|null){
         this._selectedDialog = selected
         // this._selectedPurpose = selected.id === this._selectedPurpose.id ? {} : {id: selected.id}
 

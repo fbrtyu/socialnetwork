@@ -37,7 +37,7 @@ class UserController {
             const {login, password, firstName} = req.body
             const text = 'SELECT * FROM userinfo WHERE email = $1'
             const user = await client.query(text, [login])
-            // console.log(user.rows)
+            console.log(user.rows)
             // console.log(result.rows[0].password)
             if (user.rows[0]) {
                 throw new Error("Пользователь с таким логином уже существует")
@@ -58,7 +58,7 @@ class UserController {
             }
             return res.json({token, refreshToken})
         } catch (e) {
-            return res.json({message: e.message})
+            return res.json({error: e.message})
         }
     }
 
@@ -69,7 +69,8 @@ class UserController {
             const result = await client.query(text, [login])
             console.log(result.rows)
             // console.log(result.rows[0].password)
-            if (!result.rows[0]) {
+            if (result.rows.length === 0) {
+                console.log("Пользователя с таким логином не существует")
                 throw new Error("Пользователя с таким логином не существует")
             }
             let comparePassword = bcrypt.compareSync(password, result.rows[0].password)
@@ -86,7 +87,7 @@ class UserController {
             // console.log(result.rows[0])
             return res.json({token, refreshToken});
         } catch (e) {
-            return res.json({message: e})
+            return res.json({error: e.message})
         }
     }
 
