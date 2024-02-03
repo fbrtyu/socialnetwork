@@ -1,9 +1,7 @@
 import React, {useCallback, useContext, useEffect, useRef, useState} from 'react';
-
 import { observer } from "mobx-react-lite";
 import { Context } from "../index";
 import {getChatMessages, getChats} from "../http/messengerAPI";
-import MessageInput from "../components/MessageInput";
 import ChatList from "../components/ChatList";
 import DialogWindow from "../components/DialogWindow";
 
@@ -14,9 +12,8 @@ const MessengerPage = observer(() => {
 
     //Функция для отправки сообщения в Вебсокет
     function wsSendEcho() {
-        const text = textMessage;
         //Пока такие данные, их надо будет хранить у клиента и получать из переменных
-        ws.current.send(JSON.stringify({ action: 'ECHO', data: text, chatid: messenger.selectedDialog.dialogId, usersenderid: userId(), createdate: null, updatedate: null }));
+        ws.current.send(JSON.stringify({ action: 'ECHO', data: textMessage, chatid: messenger.selectedDialog.dialogId, usersenderid: userId(), createdate: null, updatedate: null }));
     }
     const [textMessage, setTextMessage] = useState<string | null>('')
     const [status, setStatus] = useState("")
@@ -35,38 +32,28 @@ const MessengerPage = observer(() => {
 
     const getWSMessages = useCallback(() => {
         ws.current.onmessage = (message: MessageEvent<any>) => {
-            // setFlagWS(!flagWS)
             setLatestMessage(message)
-
-            //Почти работает (если на сервере использовать client.send(jsonMessage.data);), но ты из БД качаешь новые сообщения (поэтому работает),
-            //а в вебсокете тогда будет только текст передаваться, чего не достаточно, если не качать, а получать новые из вебсокета
-
-            //Не особо работает, если на сервере использовать client.send(JSON.stringify(jsonMessage));
-            //Но зато в вебсокете ты получаешь обычный JSON, который можно распарсить с помощью JSON.Parse(полученные данные из WS)
-            //Как тут переделать логику на получение сообщения из сокета, а не заново скачивать из БД я хз
-            //Но передать нормальный JSON могу и получить его тут, и распарсить
             console.log('Message: %s', message.data);
         }
     }, [latestMessage])
-
-
 
     useEffect(() => {
         getChats(userId()).then((data) => { //: {Count: number, Chats: any[]}[]
                 console.log(userId())
                 console.log(data)
-            messenger.setDialogs(data.Chats.map((chat: any) => ({
-                dialogId: chat.chatid,
-                dialogName: chat.chatname,
-                dialogImage: null,
-                userCreatorId: chat.usercreaterid,
-                users: chat.Users
-            })))
-            console.log(messenger.dialogs)
+            messenger.setDialogs(data.Chats.map((chat: any) => (
+                {
+                    dialogId: chat.chatid,
+                    dialogName: chat.chatname,
+                    dialogImage: null,
+                    userCreatorId: chat.usercreaterid,
+                    users: chat.Users
+                })))
             }
         )
-    }, []);
-    // Для первого получения данных
+    }, [latestMessage]);
+
+    // Триггер: выбор диалога или получение нового сообщения из WS
     useEffect(() => {
         if (!messenger.selectedDialog)
             return
@@ -91,19 +78,22 @@ const MessengerPage = observer(() => {
                 return r;
             }, Object.create(null)))
                 console.log(messenger.dialogMessages)
-
             }
         )
     }, [messenger.selectedDialog,  latestMessage]);
+
+    //Отправка сообщения через WS
     const sendingMessage = () => {
         if (!textMessage)
             return;
         wsSendEcho();
         // uploadDialogMessages()
+        //Обнуление окна ввода
         setTextMessage("")
     }
-    const userId = () => user.user.userId;
 
+    // Временно!
+    // Сброс скролла диалога к последним сообщениям при выборе диалога
     useEffect(() => {
         var block = document.getElementById("chat");
         if (block)
@@ -112,14 +102,20 @@ const MessengerPage = observer(() => {
     function delay(ms: number) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
+
+    const userId = () => user.user.userId;
     //           text-overflow: ellipsis; /* will make [...] at the end */
     // width: 370px; /* change to your preferences */
     // white-space: nowrap; /* paragraph to one line */
     // overflow:hidden; /* older browsers */
     return (
-        <div style={{ display: "flex", flex: "1", justifyContent: "center", paddingTop: "20px", height: '100%', maxHeight: "100%", paddingBottom:"20px", boxSizing:"border-box",}}>
-            <ChatList></ChatList>
-            <DialogWindow sendingMessage={sendingMessage} textMessage={textMessage} setTextMessage={setTextMessage}></DialogWindow>
+        <div style={{ display: "flex", flex: "1", justifyContent: "center", paddingTop: "20px", maxHeight: "90%", paddingBottom:"20px", boxSizing:"border-box",}}>
+            <ChatList/>
+            <DialogWindow
+                sendingMessage={sendingMessage}
+                textMessage={textMessage}
+                setTextMessage={setTextMessage}
+            />
         </div>
     );
 });

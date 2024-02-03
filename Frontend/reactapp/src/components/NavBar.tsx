@@ -24,7 +24,7 @@ const NavBar = observer( () => {
         user.setIsAuth(false)
     }
     return (
-        <nav style={{backgroundColor: "#2BB98BFF"}}>
+        <nav style={{display: "flex", backgroundColor: "#2BB98BFF", justifyContent: "center", flexDirection: "column", flexShrink: "0"}}>
             <div onClick={() => navigate(MAIN_ROUTE)}>Главная</div>
             {
                 user.isAuth ?

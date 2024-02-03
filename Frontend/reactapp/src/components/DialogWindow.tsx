@@ -8,7 +8,7 @@ const DialogWindow = (props: any) => {
     const userId = () => user.user.userId
     return (
         <div style={{ display: 'flex', background: "honeydew", maxWidth: "900px", width: "700px", maxHeight: "100%", flexDirection: "column",  boxSizing:"border-box" }}>
-            <div id={"chat"} style={{ display: "flex", flexDirection: "column", width: "100%",  minHeight:'min-content', maxHeight: "100%",  overflow: 'auto', boxSizing:"border-box"}}>
+            <div id={"chat"} style={{ display: "flex", flexDirection: "column", width: "100%",  overflow: 'auto', boxSizing:"border-box", flex: "1 1 0px"}}>
                 {
                     messenger.selectedDialog ?
                         (messenger.dialogMessages? Object.keys(messenger.dialogMessages).map((key: string) =>

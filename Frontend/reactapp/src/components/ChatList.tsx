@@ -1,6 +1,7 @@
 import React, {useContext} from 'react';
 import {observer} from "mobx-react-lite";
 import {Context} from "../index";
+import {Dialog, DialogUser} from "../interfaces/IMessenger";
 
 const ChatList = observer(() => {
     const {user, messenger} = useContext(Context)
@@ -10,15 +11,16 @@ const ChatList = observer(() => {
             boxSizing: "border-box",
             marginRight: "10px"}}>
             {
-                messenger.dialogs.map((dialog: { dialogId: string, dialogName: string | null, dialogImage: string | null, users: { userId: string, fN: string, image: string | null }[] }) =>
+                messenger.dialogs.map((dialog: Dialog) =>
                     <div
                         style={{ display: "flex", cursor: "pointer", border: "solid 1px black", width: "100%", height: "50px", alignItems: "center", boxSizing: "border-box"}}
                         key={dialog.dialogId}
-                        onClick={async () => {
-                            if (messenger.selectedDialog !== dialog) {
-                                messenger.setSelectedDialog(dialog)
+                        onClick={() =>
+                            {
+                                if (messenger.selectedDialog !== dialog) {
+                                    messenger.setSelectedDialog(dialog)
+                                }
                             }
-                        }
                         }
                     >
                         <div style={{ display: 'flex', width: "50px", height: "50px", justifyContent: "center", alignItems: "center" }}>
@@ -26,12 +28,11 @@ const ChatList = observer(() => {
                                 dialog.dialogImage ? <img src={dialog.dialogImage} style={{ borderRadius: "50%" }} />
                                     :
                                     <div style={{ display: 'flex', width: "90%", height: '90%', borderRadius: "50%", backgroundColor: "blue" }} />
-
                             }
                         </div>
                         {dialog.dialogName ? dialog.dialogName
                             :
-                            dialog.users.map((user: { userId: string, fN: string, image: string | null }) => {
+                            dialog.users.map((user: DialogUser) => {
                                     if (user.userId !== userId())
                                         return user.fN
                                 }

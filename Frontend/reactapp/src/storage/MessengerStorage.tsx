@@ -1,5 +1,5 @@
 import {makeAutoObservable} from "mobx";
-import {Dialog, DialogMessage, SelectedDialog} from "../interfaces/Imessenger";
+import {Dialog, DialogMessage, SelectedDialog} from "../interfaces/IMessenger";
 
 
 export default class MessengerStorage{
@@ -33,13 +33,6 @@ export default class MessengerStorage{
     setDialogMessages(messages: DialogMessage[]|null) {
         this._dialogMessages = messages
     }
-    setDialogMessagesWS(messages: {messageId: string|null, files: string|null, text: string|null, userSenderId: string, firstName: string, createDate :any|null, updateDate: any|null}[]) {
-        this._dialogMessagesWS = messages
-    }
-    // pushDialogMessages(message:{messageId: string|null, files: string|null, text: string|null, userId: string, createDate :any|null, updateDate: any|null})
-    // {
-    //     this._dialogMessages.push(message)
-    // }
 
     setSelectedDialog(selected: SelectedDialog|null){
         this._selectedDialog = selected

@@ -35,24 +35,21 @@ const Auth = observer(() => {
             user.setUser({userId: data.id})
             user.setIsAuth(true)
             navigate(MAIN_ROUTE)
-
         } catch (e: any)
         {
             console.error(e.message)
-            setError(e.message)//(e.response.data.message)
+            setError(e.message)
         }
     }
     return (
         <div
-            // className={"d-flex justify-content-center align-items-center"}
-            // style={{height: window.innerHeight - 54}}
+
             style={{display: "flex", justifyContent: "center", alignItems: "center", height: "100%"}}
         >
             <div style={{display: "flex", flexDirection: "column", width: 500, height: 400, background: "#ffffff", borderRadius: "5%",  justifyContent: "center", alignItems: "center",
                 boxSizing: "border-box",
                 paddingBottom: "20px"}}>
                 <h2 className="m-auto">{isLogin ? 'Вход' : 'Регистрация'}</h2>
-                {/*<form className="d-flex flex-column" method={"post"}>*/}
                     <input
                         type={"text"}
                         style={{marginBottom:"5px"}}
@@ -71,7 +68,6 @@ const Auth = observer(() => {
                             required
                             onChange={e => setName(e.target.value)}
                         />
-
                     }
                     <input
                         placeholder="Пароль"
@@ -93,8 +89,6 @@ const Auth = observer(() => {
                         />
 
                     }
-
-
                             <div style={{marginBottom:"10px"}}>
                                 {isLogin ?
                                     <div onClick={() => navigate(REGISTRATION_ROUTE)}>Регистрация</div>
@@ -102,7 +96,6 @@ const Auth = observer(() => {
                                     <div onClick={() => navigate(LOGIN_ROUTE)}>Есть аккаунт? Войдите</div>
                                 }
                             </div>
-
                     <input
                         type = {"submit"}
                         onClick={() => accept()}
@@ -110,18 +103,14 @@ const Auth = observer(() => {
                         value={isLogin ? 'Войти' : 'Зарегестрироваться'}
                         style={{marginBottom:"10px"}}
                     >
-
                     </input>
                 {
                     error?
                         <div style={{color: "red"}}>{error}</div>
                         :
                         null
-
                 }
             </div>
-
-
 
         </div>
     );

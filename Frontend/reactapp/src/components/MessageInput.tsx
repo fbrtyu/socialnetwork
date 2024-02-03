@@ -10,7 +10,6 @@ const MessageInput = (props: any) => {
                 {
                     props.setTextMessage(e.target.value)
                     e.target.style.height = 'auto';
-
                     e.target.style.height = (e.target.scrollHeight) + 'px';//////console.log(this.scrollHeight);
                 }
             }
@@ -24,7 +23,6 @@ const MessageInput = (props: any) => {
                           textAlign: "start", boxSizing: "border-box" }}
                       value={props.textMessage}
             >
-
             </textarea>
             <input
                 type={"button"}

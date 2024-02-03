@@ -14,15 +14,7 @@ import {observer} from "mobx-react-lite";
 
 const App = observer(() => {
     const {user} = useContext(Context)
-    // const {order} = useContext(Context)
 
-
-    const [card, setCard] = useState()
-    const [modal, setModal] = useState(false)
-    const [selectedSort, setSelectedSort] = useState('')
-    const [searchQuery, setSearchQuery] = useState('')
-    const [filter, setFilter] = useState({ sort: '', query: '' })
-    // const sortedAndSearchedItems = useItems(items, filter.sort, filter.query)
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
@@ -35,30 +27,27 @@ const App = observer(() => {
                         user.setUser({userId: id})
                         user.setIsAuth(true)
                     }
-
-
-
             }).finally(() => setLoading(false))
         }
         ,[])
 
-    // if (loading) {
-    //     return <div>Loading</div>
-    // }
-  return (
-    <div className="App" style={{display: "flex", flexDirection: "column", maxWidth: "100vw", height: "100svh", background: "#a6a1a1"}}>
-        <BrowserRouter>
-            <NavBar/>
-            {/*<nav style={{minWidth: "100%", height: "50px", background: "gray", marginBottom: "5px",display: "flex"}}></nav>*/}
-            {/*<div style={{display: "flex", marginLeft: "auto", marginRight: "auto"}}>*/}
-            {/*    /!*<SideMenu></SideMenu>*!/*/}
-            {/*    /!*<MessegerPage></MessegerPage>*!/*/}
-            {/*</div>*/}
-            <div style={{display: "flex", maxHeight: "100%"}}></div>
-            <AppRouter></AppRouter>
-        </BrowserRouter>
-    </div>
-  );
-})
+    if (loading) {
+        return <div>Loading</div>
+    }
+    return (
+        <div className="App" style={{display: "flex", flex: "0, 1", flexDirection: "column", maxWidth: "100vw", height: "100svh", background: "#a6a1a1"}}>
+            <BrowserRouter>
+                <NavBar/>
+                {/*<nav style={{minWidth: "100%", height: "50px", background: "gray", marginBottom: "5px",display: "flex"}}></nav>*/}
+                {/*<div style={{display: "flex", marginLeft: "auto", marginRight: "auto"}}>*/}
+                {/*    /!*<SideMenu></SideMenu>*!/*/}
+                {/*    /!*<MessegerPage></MessegerPage>*!/*/}
+                {/*</div>*/}
+                <div style={{display: "flex", maxHeight: "100%"}}></div>
+                <AppRouter></AppRouter>
+            </BrowserRouter>
+        </div>
+      );
+    })
 
 export default App;

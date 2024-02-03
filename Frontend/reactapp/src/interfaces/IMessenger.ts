@@ -16,14 +16,14 @@ export interface Dialog {
     dialogName: string|null,
     userCreatorId: string,
     dialogImage: string| null,
-    users:
-        {
-            userId: string,
-            fN: string,
-            image: string|null
-        }[]
+    users: DialogUser[]
 }
 
+export interface DialogUser {
+    userId: string,
+    fN: string,
+    image: string|null
+}
 export interface SelectedDialog {
     dialogId: string,
     dialogName: string
