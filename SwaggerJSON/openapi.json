@@ -14,9 +14,44 @@
     {
       "name": "chat",
       "description": "Работа с чатами"
+    },
+    {
+      "name": "friends",
+      "description": "Манипуляции с друзьми пользователя"
     }
   ],
   "paths": {
+    "/searchfriend": {
+      "get": {
+        "tags": [
+          "friends"
+        ],
+        "description": "Получение списка пользователей из БД, которые подходят по поисковому запросу",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Логин, email или ФИО пользователя",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Массив подходящих пользователей в формате JSON",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchUser"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/getchats": {
       "get": {
         "tags": [
@@ -226,6 +261,36 @@
             "type": "string",
             "format": "base64",
             "example": "cXdlcnR5MTIzNDU2"
+          }
+        }
+      },
+      "SearchUser": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1
+          },
+          "firstname": {
+            "type": "string",
+            "format": "string",
+            "example": "Иван"
+          },
+          "lastname": {
+            "type": "string",
+            "format": "string",
+            "example": "Иванов"
+          },
+          "country": {
+            "type": "string",
+            "format": "string",
+            "example": "Москва"
+          },
+          "email": {
+            "type": "string",
+            "format": "string",
+            "example": "qwe@mail.ru"
           }
         }
       }
