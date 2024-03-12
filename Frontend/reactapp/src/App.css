@@ -36,6 +36,42 @@
   color: #61dafb;
 }
 
+.listItem {
+
+}
+
+.listItem:hover {
+  background: #97e8ce;
+}
+.selectedItem {
+  background: #2BB98BFF;
+}
+.button {
+  padding-right: 20px;
+  padding-left: 20px;
+  font-size: 1.3em;
+  background: #2BB98BFF;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.hover:hover {
+  background: #97e8ce;
+}
+.icon {
+  stroke: #ffffff
+}
+
+.inputBlockFocusOff:focus {
+ outline: none;
+}
+
+.icon:hover {
+  fill: #97e8ce
+}
+.textHover:hover  {
+  text-decoration: underline
+}
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

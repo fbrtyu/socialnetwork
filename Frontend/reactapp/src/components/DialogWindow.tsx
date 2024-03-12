@@ -7,7 +7,7 @@ const DialogWindow = (props: any) => {
     const {textMessage, setTextMessage, sendingMessage} = props
     const userId = () => user.user.userId
     return (
-        <div style={{ display: 'flex', background: "honeydew", maxWidth: "900px", width: "700px", maxHeight: "100%", flexDirection: "column",  boxSizing:"border-box" }}>
+        <div style={{ display: 'flex', background: "#FBFFFF", maxWidth: "900px", width: "700px", maxHeight: "100%", flexDirection: "column",  boxSizing:"border-box", borderRadius: "5px", overflow: "hidden" }}>
             <div id={"chat"} style={{ display: "flex", flexDirection: "column", width: "100%",  overflow: 'auto', boxSizing:"border-box", flex: "1 1 0px"}}>
                 {
                     messenger.selectedDialog ?
@@ -37,7 +37,7 @@ const DialogWindow = (props: any) => {
                                                     marginLeft: (userId() === message.userSenderId ? "auto": "5px"),
                                                     textAlign: "justify", whiteSpace: 'normal',wordWrap: 'break-word',
                                                     marginTop: "5px", marginBottom: "5px",maxWidth: "70%",maxHeight: "auto",
-                                                    color: (message.createDate ? "black" : "red"), boxSizing:"border-box"}}
+                                                    color: (message.createDate ? "black" : "red"), boxSizing:"border-box", borderRadius:"5px"}}
                                             >
                                                 <div style={{marginLeft: "10px", marginTop: "2px", marginRight: "10px", fontWeight: '500'}}>
                                                     {message.firstName}
@@ -46,7 +46,7 @@ const DialogWindow = (props: any) => {
                                                     {message.text}
                                                 </div>
 
-                                                <div style={{textAlign:"end", color: "#606161", fontSize: 'smaller',whiteSpace: 'normal',wordWrap: 'break-word'}}>
+                                                <div style={{textAlign:"end", color: "#606161", fontSize: 'smaller',whiteSpace: 'normal',wordWrap: 'break-word', paddingRight: '3px', paddingBottom: '1px'}}>
                                                     {
                                                         [new Date(message.createDate).getHours(), new Date(message.createDate).getMinutes()].map(function (x) {
                                                             return x < 10 ? "0" + x : x

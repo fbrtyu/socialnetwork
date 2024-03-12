@@ -22,10 +22,14 @@ const Auth = observer(() => {
         try {
             let data: any;
             if (isLogin){
+                if (!password || !email)
+                    throw new Error('Не все поля заполнены')
                 data = await login(email, password)
             }
             else
             {
+                if (!password || !email || !name)
+                    throw new Error('Не все поля заполнены')
                 if (password !== passwordCheck)
                     throw new Error('Пароли не совпадают')
                 data = await registration(email, password, name)
@@ -91,16 +95,16 @@ const Auth = observer(() => {
                     }
                             <div style={{marginBottom:"10px"}}>
                                 {isLogin ?
-                                    <div onClick={() => navigate(REGISTRATION_ROUTE)}>Регистрация</div>
+                                    <div className={"textHover"} style={{cursor: "pointer"}} onClick={() => navigate(REGISTRATION_ROUTE)}>Регистрация</div>
                                     :
-                                    <div onClick={() => navigate(LOGIN_ROUTE)}>Есть аккаунт? Войдите</div>
+                                    <div className={"textHover"} style={{cursor: "pointer"}} onClick={() => navigate(LOGIN_ROUTE)}>Есть аккаунт? Войдите</div>
                                 }
                             </div>
                     <input
                         type = {"submit"}
                         onClick={() => accept()}
-                        className={"mt-2 buttonStyle"}
-                        value={isLogin ? 'Войти' : 'Зарегестрироваться'}
+                        className={"button hover"}
+                        value={isLogin ? 'Вход' : 'Регистрация'}
                         style={{marginBottom:"10px"}}
                     >
                     </input>

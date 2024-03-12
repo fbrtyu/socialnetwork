@@ -5,7 +5,6 @@ import App from './App';
 // import reportWebVitals from './reportWebVitals';
 import UserStore from "./storage/UserStorage";
 import MessengerStorage from "./storage/MessengerStorage";
-// require('dotenv').config({path: `${__dirname}/.env`})
 export const Context:React.Context<any> = createContext(null)
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

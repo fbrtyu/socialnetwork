@@ -22,6 +22,7 @@ const NavBar = observer( () => {
         localStorage.removeItem("refreshToken")
         user.setUser({})
         user.setIsAuth(false)
+        navigate(MAIN_ROUTE)
     }
     return (
         <nav style={{display: "flex", backgroundColor: "#2BB98BFF", justifyContent: "center", flexDirection: "column", flexShrink: "0"}}>

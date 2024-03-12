@@ -35,7 +35,7 @@ const App = observer(() => {
         return <div>Loading</div>
     }
     return (
-        <div className="App" style={{display: "flex", flex: "0, 1", flexDirection: "column", maxWidth: "100vw", height: "100svh", background: "#a6a1a1"}}>
+        <div className="App" style={{display: "flex", flex: "0, 1", flexDirection: "column", maxWidth: "100vw", height: "100svh", background: "#d7d7d7"}}>
             <BrowserRouter>
                 <NavBar/>
                 {/*<nav style={{minWidth: "100%", height: "50px", background: "gray", marginBottom: "5px",display: "flex"}}></nav>*/}
