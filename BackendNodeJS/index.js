@@ -1,6 +1,7 @@
 const express = require('express');
 const ws = require("./ws.js");
 const pg = require("./pg.js");
+const searchfriend = require("./searchfriend.js");
 const cors = require('cors')
 const router = require('../BackendNodeJS/routes/index')
 const client = require('./db')
@@ -10,6 +11,7 @@ const PORT = process.env.PORT
 app.use(cors())
 app.use(express.json())
 app.use('/api', router)
+
 //Путь для получения чатов пользователя по userid
 app.get('/getchats', async function(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -42,12 +44,27 @@ app.get('/getchatmessages', async function(req, res) {
     res.send(JSON.stringify(answer));
 })
 
+//Путь для получения найденных пользователей
+app.get('/searchfriend', async function(req, res) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    
+    let search = req.query.search;
+
+    let answer = await searchfriend.searchfriend(search);
+
+    res.send(JSON.stringify(answer));
+})
+
 // var server = app.listen(8080, function () {
 //     var host = server.address().address;
 //     var port = server.address().port;
 //     console.log("Сервер работает на порту 8080");
 //
 // });
+
 ws.ws();
 const start = async () => {
     try {
