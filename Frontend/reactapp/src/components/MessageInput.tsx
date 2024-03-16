@@ -3,7 +3,7 @@ import React from 'react';
 
 const MessageInput = (props: any) => {
     return (
-        <div style={{ display: "flex", marginBottom: "0px", marginTop: "auto", background: "#2BB98BFF", width: "100%", maxHeight: "200px", paddingTop: "", alignItems: "center" }}>
+        <div style={{ display: "flex", marginBottom: "0px", marginTop: "auto", background: "#2BB98BFF", width: "100%", maxHeight: "200px", paddingTop: "", alignItems: "center", minHeight: "min-content"}}>
 
             <div style={{ marginBottom: "0px", marginTop: "auto", width: "30px", height: "30px", marginLeft: "auto"}}></div>
             <textarea
@@ -15,21 +15,25 @@ const MessageInput = (props: any) => {
                     e.target.style.height = (e.target.scrollHeight) + 'px';//////console.log(this.scrollHeight);
                 }
             }
-                className={'inputBlockFocusOff'}
-                style={{ padding: "3px",
-                  borderRadius: "5px",
-                  background: "#FBFFFF",
-                  width: "450px", minHeight: "40px",
-                  maxHeight: "180px", resize: "none",
-                  marginTop: "5px", marginBottom: "5px",
-                  overflowX: "hidden", overflowY: "auto",
-                  textAlign: "start", boxSizing: "border-box",}}
+                className={'inputBlockFocusOff inputBlock'}
+                style={{
+                    // padding: "3px",
+                    background: "#FBFFFF",
+                    borderRadius: "3px",
+                    width: "450px", minHeight: 'min-content',
+                    maxHeight: "180px", resize: "none",
+                    marginTop: "5px", marginBottom: "5px",
+                    overflowX: "hidden", overflowY: "auto",
+                    paddingLeft: "10px", fontSize: "1rem",
+                    fontFamily: " sans-serif",
+                    verticalAlign: "middle",
+                    textAlign: "start", boxSizing: "border-box",}}
                 value={props.textMessage}
             >
             </textarea>
             <div
                 // className={"icon"}
-                style={{ marginRight: "auto", marginLeft: "5px", width: "35px", height: "35px", border: "none"}}
+                style={{display: "flex", flexShrink: "0", marginRight: "auto", marginLeft: "5px", width: "35px", height: "35px", border: "none", alignItems: "center",}}
                 onClick={() => props.sendingMessage()}
             >
                 <svg viewBox="0 -0.5 25 25" fill="none" xmlns="http://www.w3.org/2000/svg" className={"icon"}>

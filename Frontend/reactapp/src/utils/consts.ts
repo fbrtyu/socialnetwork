@@ -6,3 +6,5 @@ export const MAIN_ROUTE = '/main'
 
 export const MESSENGER_ROTE = '/messenger'
 
+export const FRIEND_ROTE = '/friends'
+

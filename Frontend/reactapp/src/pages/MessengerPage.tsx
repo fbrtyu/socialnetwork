@@ -1,4 +1,4 @@
-import React, {useCallback, useContext, useEffect, useRef, useState} from 'react';
+import React, {ReactHTMLElement, useCallback, useContext, useEffect, useRef, useState} from 'react';
 import { observer } from "mobx-react-lite";
 import { Context } from "../index";
 import {getChatMessages, getChats} from "../http/messengerAPI";
@@ -20,6 +20,24 @@ const MessengerPage = observer(() => {
     const [flagWS, setFlagWS] = useState<boolean>(false)
     const [latestMessage,setLatestMessage] = useState<any>(null)
     const [dialogMessagesOnDate, setDialogMessagesOnDate] = useState<any[]>()
+    const [selectedOwnMessages, setSelectedOnwMessages] = useState<boolean[]>([])
+    const [selectedOtherMessages, setSelectedOtherMessages] = useState<boolean[]>([])
+
+    const selectMessage = (id: number) => {
+        if (userId() === id)
+        {
+            selectedOwnMessages[id] ? delete selectedOwnMessages[id] : selectedOwnMessages[id] = true
+            console.log(selectedOwnMessages.length)
+        }
+        else
+        {
+            selectedOtherMessages[id] ? delete selectedOtherMessages[id] : selectedOtherMessages[id] = true
+            console.log(selectedOtherMessages.length)
+        }
+
+
+
+    }
 
     useEffect(() => {
         ws.current = new WebSocket("ws://localhost:9000"); // создаем ws соединение
@@ -115,6 +133,7 @@ const MessengerPage = observer(() => {
                 sendingMessage={sendingMessage}
                 textMessage={textMessage}
                 setTextMessage={setTextMessage}
+                selectMessage={selectMessage}
             />
         </div>
     );

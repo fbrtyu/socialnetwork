@@ -4,12 +4,13 @@ import {
     LOGIN_ROUTE,
     REGISTRATION_ROUTE,
     MAIN_ROUTE,
-    MESSENGER_ROTE
+    MESSENGER_ROTE, FRIEND_ROTE
 } from "./utils/consts";
 import Auth from "./pages/Auth";
 import MessengerPage from "./pages/MessengerPage";
 import Main from "./pages/Main";
 import Admin from "./pages/Admin";
+import FriendsPage from "./pages/FriendsPage";
 
 
 export  const authRoutes =  [
@@ -21,7 +22,10 @@ export  const authRoutes =  [
         path: MESSENGER_ROTE,
         Component: MessengerPage
     },
-
+    {
+        path: FRIEND_ROTE,
+        Component: FriendsPage
+    }
 ]
 export  const publicRoutes = [
     {
@@ -36,7 +40,4 @@ export  const publicRoutes = [
         path: MAIN_ROUTE,
         Component: Main
     }
-
-
-
 ]
