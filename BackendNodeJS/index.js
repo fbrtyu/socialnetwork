@@ -60,14 +60,14 @@ app.get('/searchfriend', async function(req, res) {
 })
 
 //Путь для изменения сообщения
-app.post('/editmessage', async function(req, res) {
+app.patch('/editmessage', async function(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
     res.setHeader('Access-Control-Allow-Credentials', true);
 
-    let messageid = req.query.messageid;
-    let newtext = req.query.newtext;
+    let messageid = req.body.messageid;
+    let newtext = req.body.newtext;
 
     let answer = await editmessage.editmessage(messageid, newtext);
 
