@@ -2,8 +2,7 @@ const { Client } = require("pg")
 const dotenv = require("dotenv")
 dotenv.config()
 
-async function deletemessage(chatid, messageid) {
-    let updtext = "Сообщение удалено пользователем!";
+async function editmessage(messageid, newtext) {
     try {
         const client = new Client({
             user: process.env.PGUSER,
@@ -16,17 +15,17 @@ async function deletemessage(chatid, messageid) {
         await client.connect();
 
         const query = {
-            text: 'UPDATE message SET text = $1 WHERE chatid = $2 AND id = $3',
-            values: [updtext, chatid, messageid],
+            text: 'UPDATE message SET text = $1 WHERE id = $3',
+            values: [newtext, messageid],
         };
 
         const res = await client.query(query);
         await client.end();
-        return "Вы удалили сообщение!"
+        return "Вы изменили сообщение!"
 
     } catch (error) {
         console.log(error);
     };
 };
 
-module.exports.deletemessage = deletemessage;
+module.exports.editmessage = editmessage;
