@@ -15,7 +15,7 @@ async function editmessage(messageid, newtext) {
         await client.connect();
 
         const query = {
-            text: 'UPDATE message SET text = $1 WHERE id = $3',
+            text: 'UPDATE message SET text = $1 WHERE id = $2',
             values: [newtext, messageid],
         };
 

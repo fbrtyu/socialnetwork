@@ -67,6 +67,7 @@ app.post('/editmessage', async function(req, res) {
     res.setHeader('Access-Control-Allow-Credentials', true);
 
     let messageid = req.query.messageid;
+    let newtext = req.query.newtext;
 
     let answer = await editmessage.editmessage(messageid, newtext);
 
