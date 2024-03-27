@@ -1,18 +1,21 @@
 import React, {createContext} from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
+import './index.scss';
 import App from './App';
 // import reportWebVitals from './reportWebVitals';
 import UserStore from "./storage/UserStorage";
 import MessengerStorage from "./storage/MessengerStorage";
+
 export const Context:React.Context<any> = createContext(null)
+export const WebsocketContext:React.Context<any> = createContext({ready: false, value: null, send: null})
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
       <Context.Provider value={{
           user: new UserStore(),
-          messenger: new MessengerStorage()
+          messenger: new MessengerStorage(),
+          ws: null,
       }}>
           <App />
       </Context.Provider>

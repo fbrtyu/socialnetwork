@@ -26,5 +26,8 @@ export interface DialogUser {
 }
 export interface SelectedDialog {
     dialogId: string,
-    dialogName: string
+    dialogName: string|null,
+    userCreatorId: string,
+    dialogImage: string| null,
+    users: DialogUser[]
 }

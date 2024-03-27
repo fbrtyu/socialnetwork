@@ -1,8 +1,9 @@
 import React, {useContext} from 'react';
-import MessageInput from "./MessageInput";
-import {Context} from "../index";
+import MessageInput from "../MessageInput/MessageInput";
+import {Context} from "../../index";
 import {observer} from "mobx-react-lite";
 import {action} from "mobx";
+import styles from "./dialogWindow.module.scss"
 
 const DialogWindow = observer((props: any) => {
     const {user,messenger} = useContext(Context)
@@ -11,7 +12,23 @@ const DialogWindow = observer((props: any) => {
 
     const userId = () => user.user.userId
     return (
-        <div style={{ display: 'flex', background: "#FBFFFF", maxWidth: "900px", width: "700px", maxHeight: "100%", flexDirection: "column",  boxSizing:"border-box", borderRadius: "5px", overflow: "hidden" }}>
+        <div
+            className={"mainPanel"}
+            style={{}}
+        >
+            <div
+                style={{display: (messenger.selectedDialog ? "flex" : "none"), justifyContent: "space-between", alignItems: "center",boxSizing: "border-box", border: "1px", borderColor: "#ababab", borderBottomStyle: "solid", height: "40px", cursor:"",
+                    paddingRight: "5px", paddingLeft: "5px"
+                }}
+
+            >
+                <div style={{paddingLeft: "5px"}}>
+                    <div style={{margin: "0px", textAlign:"start", fontWeight: "700"
+                    }}
+                    >{messenger.selectedDialog?.dialogName}</div>
+                    <div>Участников: {messenger.selectedDialog?.users?.length}</div>
+                </div>
+            </div>
             <div id={"chat"} style={{ display: "flex", flexDirection: "column", width: "100%",  overflow: 'auto', boxSizing:"border-box", flex: "1 1 0px"}}>
                 {
                     messenger.selectedDialog ?
@@ -26,14 +43,21 @@ const DialogWindow = observer((props: any) => {
                                 }</div>
                                 {messenger.dialogMessages[key].map((message: any) =>
                                     <div
-                                        className={"message" + (message.selected ? " selectMessage" : "")}
-                                        style={{display: "flex", alignItems: "center", minHeight: 'min-content', maxHeight: '100%', paddingRight: (userId() === message.userSenderId ? "5px": ""),
-                                        paddingLeft: (userId() === message.userSenderId ? "" : "5px"), boxSizing:"border-box", justifyContent: (userId() === message.userSenderId?  "end": "start"),}}
+                                        className=
+                                            {
+                                                styles.messageContainer + " " +
+                                                (
+                                                    userId() === message.userSenderId ?
+                                                        styles.messageContainerOwner
+                                                        :
+                                                        styles.messageContainerOther
+                                                ) +
+                                                " " + (message.selected ? styles.selectMessage : "")
+                                            }
                                         key={message.messageId}
                                         onMouseEnter={action(() => {message.active = true})}
                                         onMouseLeave={action(() => {delete message.active})}
                                         onClick={action(() => {
-                                            // selectMessage(message.userSenderId)
                                             message.selected ? delete message.selected : message.selected = true
                                         })}
                                     >
@@ -62,7 +86,9 @@ const DialogWindow = observer((props: any) => {
                                             <div style={{marginLeft: "10px", marginTop: "2px", marginRight: "10px", fontWeight: '500'}}>
                                                 {message.firstName}
                                             </div>
-                                            <div style={{textAlign:"justify", color: "#424242", fontSize: '0.9rem',whiteSpace: 'normal',wordWrap: 'break-word', marginRight: "10px", marginLeft: "10px", paddingTop: "2px", boxSizing: "border-box"}}>
+                                            <div
+                                                className={styles.text}
+                                                style={{}}>
                                                 {message.text}
                                             </div>
 
@@ -78,9 +104,15 @@ const DialogWindow = observer((props: any) => {
                                         {
                                             message.active ?
                                                 <div style={{order: "3", display: "flex", justifyContent: "space-between", paddingLeft: "5px", paddingRight: "5px"}}>
-                                                    <div style={{display:"flex", height: "20px", width: "20px", alignItems: "center", justifyContent: 'center'}}>x</div>
-                                                    <div style={{display:"flex", height: "20px", width: "20px", alignItems: "center", justifyContent: 'center'}}>y</div>
-                                                    <div style={{display:"flex", height: "20px", width: "20px", alignItems: "center", justifyContent: 'center'}}>z</div>
+                                                    <div
+                                                        className={"center "+ styles.actions}
+                                                        style={{}}>x</div>
+                                                    <div
+                                                        className={"center "+ styles.actions}
+                                                        style={{}}>y</div>
+                                                    <div
+                                                        className={"center "+ styles.actions}
+                                                        style={{}}>z</div>
                                                 </div>
                                                 :
                                                 null

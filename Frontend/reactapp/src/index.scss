@@ -1,4 +1,10 @@
+.root {
+  $base-color: #c6538c;
+  $fill-color: #2BB98BFF;
+  --fill-c: #2BB98BFF
+}
 body {
+  box-Sizing: border-box;
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',

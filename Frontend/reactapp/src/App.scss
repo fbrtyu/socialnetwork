@@ -1,0 +1,180 @@
+@import 'variables';
+.App {
+  text-align: center;
+  display: flex;
+  flex: 0 1;
+  flex-direction: column;
+  height: 100svh;
+  background: #d7d7d7;
+  box-sizing: border-box;
+}
+.page {
+  display: flex;
+  flex: 1 1 0;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  justify-content: center;
+  max-width: 100%;
+}
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+.center {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+.contentBlock {
+  box-sizing: border-box;
+  overflow: hidden;
+  max-height: 100%;
+  background: #FBFFFF;
+  border-radius: 5px;
+}
+
+.flexColumn {
+  display: flex;
+  flex-direction: column;
+
+}
+.subPanel {
+  background: #FBFFFF;
+  max-width: 300px;
+  min-width: 240px;
+  max-height: 100%;
+  box-sizing: border-box;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-right: 10px;
+}
+.mainPanel {
+  display: flex;
+  background: #FBFFFF;
+  width: 700px;
+  max-width: 700px;
+  max-height: 100%;
+  //flex-shrink: 0;
+  flex-direction: column;
+  box-sizing: border-box;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.borderBox {
+  box-sizing: border-box;
+}
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+.listItem {
+  cursor: pointer
+}
+
+.listItem:hover {
+  background: #97e8ce;
+}
+.selectedItem {
+  background: $main-color;
+}
+
+
+/*.message:hover{*/
+/*  background: #bbffde;*/
+/*}*/
+
+.button {
+  padding-right: 20px;
+  padding-left: 20px;
+  font-size: 1.3em;
+  background: #2BB98BFF;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.hover:hover {
+  background: #97e8ce;
+}
+.icon {
+  stroke: #ffffff
+}
+
+.inputBlock {
+  border: none;
+}
+
+.inputBlockFocusOff:focus {
+ outline: none;
+}
+
+.icon:hover {
+  fill: #97e8ce
+}
+.textHover:hover  {
+  text-decoration: underline
+}
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 768px) {
+  .App {
+    flex-direction: row;
+  }
+
+  .mainPanel {
+    display: flex;
+    max-width: 100%;
+    min-width: 1px;
+    //width: 700px;
+    max-height: 100%;
+    flex-direction: column;
+    border-radius: 0;
+    overflow: hidden;
+  }
+  .navHidden {
+    display: none;
+  }
+  .subPanel {
+    background: #FBFFFF;
+    max-width: 75%;
+    //width: 300px;
+    //min-width: 240px;
+    margin-right: 0;
+    z-index: 2;
+    min-height: 100%;
+    max-height: 100%;
+    border-radius: 0;
+    box-shadow: 4px 0px 8px 0px rgba(128, 128, 128, 0.4);
+    overflow: hidden;
+  }
+  .page {
+    width: 80%;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}

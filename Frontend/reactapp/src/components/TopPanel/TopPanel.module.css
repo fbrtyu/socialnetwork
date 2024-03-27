@@ -1,0 +1,14 @@
+.topPanel > nav {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .topPanel {
+    display: flex;
+  }
+  .topPanel > nav {
+    display: block;
+  }
+}
+
+/*# sourceMappingURL=TopPanel.module.css.map */

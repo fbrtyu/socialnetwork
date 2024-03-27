@@ -1,0 +1,14 @@
+.topPanel {
+  > nav {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .topPanel {
+    display: flex;
+    > nav {
+      display: block;
+    }
+  }
+}

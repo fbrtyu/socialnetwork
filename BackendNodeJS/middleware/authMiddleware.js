@@ -9,6 +9,7 @@ module.exports = async function (req, res, next) {
         next()
     }
     try {
+        req.user = ''
         const token = req.headers.authorization.split(' ')[1]
         if (!token){
             throw new Error("Аутенификация не пройдена")//res.status(401).json({message: "Аутенификация не пройдена"})
@@ -18,6 +19,8 @@ module.exports = async function (req, res, next) {
         const privateKey = await jwt.importPKCS8(`${process.env.SECRET_KEY}` , alg)
 
         const options = {
+            // В планах добавить проверку доверительного центра(Сам сайт), а также устройства входа, для уникальной сессии
+            // для каждого устройства
             issuer: 'urn:example:issuer',
             audience: 'urn:example:audience',
         }
@@ -33,9 +36,9 @@ module.exports = async function (req, res, next) {
             })
         if (!await jwt.jwtVerify(req.headers.refreshtoken, privateKey)) {
             // console.log("refToken " + req.headers.refreshtoken,)
-            return new Error("Рефрешь токен устарел")//res.status(401).json({message: "Рефрешь токен устарел"})
+            return new Error("Рефреш токен устарел")//res.status(401).json({message: "Рефрешь токен устарел"})
         }
-        const text = 'SELECT * FROM usertoken WHERE userid = $1'
+        const text = 'SELECT * FROM usertoken WHERE userid = $1'// запрос на получения токенов из БД
         const pl = await jwt.decodeJwt(token)
         const result = await client.query(text, [pl.id])
         if (!result.rows) throw new Error("Данный токен не зарегестрирован")//res.status(401).json({message: "Данный токен не зарегестрирован"})

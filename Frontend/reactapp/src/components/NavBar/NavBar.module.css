@@ -1,0 +1,71 @@
+.bMenu {
+  display: none;
+  justify-content: center;
+  box-sizing: border-box;
+  background-color: #FBFFFF;
+  border-bottom: 1px;
+  border-color: #ababab;
+  border-bottom-style: solid;
+  min-width: 40px;
+  height: 40px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+.bMenu svg {
+  stroke: #282c34;
+}
+.bMenuActive {
+  stroke: #2bb98b !important;
+}
+
+nav {
+  z-index: 3;
+  background-color: #2bb98b;
+}
+nav .routes {
+  display: flex;
+  flex-shrink: 0;
+  justify-content: space-evenly;
+}
+nav .routes > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  min-height: 30px;
+}
+
+@media (max-width: 768px) {
+  .navActive {
+    position: absolute;
+    box-shadow: 4px 0px 8px 0px rgba(128, 128, 128, 0.4);
+    height: 100%;
+  }
+  nav {
+    display: flex;
+    flex-direction: column;
+  }
+  nav .bMenu {
+    display: flex;
+  }
+  nav > div {
+    flex-direction: column;
+  }
+  nav .hidden {
+    display: none;
+  }
+  .short {
+    text-align: center;
+  }
+  .currentLocation {
+    background-color: #FBFFFF;
+    box-shadow: inset 2px 0px 1px 0px rgba(128, 128, 128, 0.4), inset 2px -2px 1px 0px rgba(128, 128, 128, 0.4), inset 2px 2px 1px 0px rgba(128, 128, 128, 0.4);
+  }
+}
+@media (max-width: 425px) {
+  .routes {
+    font-size: smaller;
+  }
+}
+
+/*# sourceMappingURL=NavBar.module.css.map */

@@ -1,28 +1,28 @@
-import React, {ReactHTMLElement, useCallback, useContext, useEffect, useRef, useState} from 'react';
+import React, { useContext, useEffect, useState} from 'react';
 import { observer } from "mobx-react-lite";
 import { Context } from "../index";
 import {getChatMessages, getChats} from "../http/messengerAPI";
-import ChatList from "../components/ChatList";
-import DialogWindow from "../components/DialogWindow";
+import ChatList from "../components/ChatList/ChatList";
+import DialogWindow from "../components/DialogWindow/DialogWindow";
+import {WebsocketContext} from "../utils/WebSocketProvider";
 
 
 const MessengerPage = observer(() => {
+    // const ws = useRef<any>(null);
     const { user, messenger } = useContext(Context)
-    const ws = useRef<any>(null);
+    const [status, latestMessage, send] = useContext(WebsocketContext)
 
     //Функция для отправки сообщения в Вебсокет
     function wsSendEcho() {
         //Пока такие данные, их надо будет хранить у клиента и получать из переменных
-        ws.current.send(JSON.stringify({ action: 'ECHO', data: textMessage, chatid: messenger.selectedDialog.dialogId, usersenderid: userId(), createdate: null, updatedate: null }));
+        send(JSON.stringify({ action: 'ECHO', data: textMessage, chatid: messenger.selectedDialog.dialogId, usersenderid: userId(), createdate: null, updatedate: null }));
     }
     const [textMessage, setTextMessage] = useState<string | null>('')
-    const [status, setStatus] = useState("")
-    const [flagWS, setFlagWS] = useState<boolean>(false)
-    const [latestMessage,setLatestMessage] = useState<any>(null)
-    const [dialogMessagesOnDate, setDialogMessagesOnDate] = useState<any[]>()
+    // const [status, setStatus] = useState("")
+    // const [latestMessage,setLatestMessage] = useState<any>(null)
     const [selectedOwnMessages, setSelectedOnwMessages] = useState<boolean[]>([])
     const [selectedOtherMessages, setSelectedOtherMessages] = useState<boolean[]>([])
-
+    const [searchValue, setSearchValue] = useState<string>('')
     const selectMessage = (id: number) => {
         if (userId() === id)
         {
@@ -34,26 +34,7 @@ const MessengerPage = observer(() => {
             selectedOtherMessages[id] ? delete selectedOtherMessages[id] : selectedOtherMessages[id] = true
             console.log(selectedOtherMessages.length)
         }
-
-
-
     }
-
-    useEffect(() => {
-        ws.current = new WebSocket("ws://localhost:9000"); // создаем ws соединение
-        ws.current.onopen = () => {setStatus("Соединение открыто"); ws.current.send(JSON.stringify({ action: 'CONNECT', userid: userId() }));
-            console.log("Соединение открыто");}	// callback на ивент открытия соединения
-        ws.current.onclose = () => {setStatus("Соединение закрыто")
-        console.log("Соединение закрыто")};
-        getWSMessages()
-    }, [ws]);
-
-    const getWSMessages = useCallback(() => {
-        ws.current.onmessage = (message: MessageEvent<any>) => {
-            setLatestMessage(message)
-            console.log('Message: %s', message.data);
-        }
-    }, [latestMessage])
 
     useEffect(() => {
         getChats(userId()).then((data) => { //: {Count: number, Chats: any[]}[]
@@ -102,8 +83,9 @@ const MessengerPage = observer(() => {
 
     //Отправка сообщения через WS
     const sendingMessage = () => {
-        if (!textMessage)
+        if (!textMessage || !textMessage.replace(/^\s+|\s+$/g, ''))
             return;
+        console.log("строка: " + textMessage)
         wsSendEcho();
         // uploadDialogMessages()
         //Обнуление окна ввода
@@ -127,8 +109,8 @@ const MessengerPage = observer(() => {
     // white-space: nowrap; /* paragraph to one line */
     // overflow:hidden; /* older browsers */
     return (
-        <div style={{ display: "flex", flex: "1", justifyContent: "center", paddingTop: "20px", maxHeight: "90%", paddingBottom:"20px", boxSizing:"border-box",}}>
-            <ChatList/>
+        <div className={"page"}>
+            <ChatList setSearchValue={setSearchValue} searchValue={searchValue}/>
             <DialogWindow
                 sendingMessage={sendingMessage}
                 textMessage={textMessage}

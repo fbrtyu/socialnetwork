@@ -1,0 +1,87 @@
+@import '../../variables';
+.bMenu {
+  display: none;
+  justify-content: center;
+  box-sizing: border-box;
+  background-color: $fill-color;
+  border-bottom: 1px;
+  border-color: #ababab;
+  border-bottom-style: solid;
+  min-width: 40px;
+  height: 40px;
+  padding-left: 5px;
+  padding-right: 5px;
+  svg {
+    stroke: #282c34;
+  }
+  &Active {
+    stroke: $main-color!important;
+  }
+
+}
+
+nav {
+  z-index: 3;
+  background-color: $main-color;
+  .routes {
+    display: flex;
+    flex-shrink: 0;
+    justify-content: space-evenly;
+
+
+    > div {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      min-height: 30px;
+    }
+  }
+
+}
+
+@media (max-width: 768px) {
+  .navActive {
+    position: absolute;
+    box-shadow: 4px 0px 8px 0px rgba(128, 128, 128, 0.4);
+    height: 100%;
+  }
+  nav {
+    display: flex;
+    flex-direction: column;
+    //order: 2;
+    //margin-right: 0;
+    //margin-left: auto;
+    //width: 20%;
+    .bMenu {
+      display: flex;
+    }
+
+    > div {
+      flex-direction: column;
+    }
+
+    > div > div {
+    }
+    .hidden {
+      display: none;
+    }
+  }
+  .short {
+    text-align: center;
+  }
+
+  .currentLocation {
+    background-color: $fill-color;
+    box-shadow: inset 2px 0px 1px 0px rgba(128, 128, 128, 0.4),
+    inset 2px -2px 1px 0px rgba(128, 128, 128, 0.4),
+    inset 2px 2px 1px 0px rgba(128, 128, 128, 0.4);
+  }
+}
+
+@media (max-width: 425px) {
+
+  .routes {
+    font-size: smaller;
+  }
+}
