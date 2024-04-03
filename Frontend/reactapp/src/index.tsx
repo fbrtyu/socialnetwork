@@ -5,6 +5,7 @@ import App from './App';
 // import reportWebVitals from './reportWebVitals';
 import UserStore from "./storage/UserStorage";
 import MessengerStorage from "./storage/MessengerStorage";
+import WebSocketProvider from "./utils/WebSocketProvider";
 
 export const Context:React.Context<any> = createContext(null)
 export const WebsocketContext:React.Context<any> = createContext({ready: false, value: null, send: null})
@@ -17,7 +18,9 @@ root.render(
           messenger: new MessengerStorage(),
           ws: null,
       }}>
-          <App />
+          <WebSocketProvider>
+              <App />
+          </WebSocketProvider>
       </Context.Provider>
 
 );

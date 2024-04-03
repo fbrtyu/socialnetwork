@@ -5,9 +5,11 @@ import {observer} from "mobx-react-lite";
 import {action} from "mobx";
 import styles from "./dialogWindow.module.scss"
 
+
 const DialogWindow = observer((props: any) => {
     const {user,messenger} = useContext(Context)
-    const {textMessage, setTextMessage, sendingMessage, selectMessage} = props
+    const {textMessage, setTextMessage, sendingMessage, selectMessage, editableMessage,
+        setEditableMessage, editMessage} = props
 
 
     const userId = () => user.user.userId
@@ -57,9 +59,6 @@ const DialogWindow = observer((props: any) => {
                                         key={message.messageId}
                                         onMouseEnter={action(() => {message.active = true})}
                                         onMouseLeave={action(() => {delete message.active})}
-                                        onClick={action(() => {
-                                            message.selected ? delete message.selected : message.selected = true
-                                        })}
                                     >
                                         <div style={{ display: 'flex', width: "50px", height: "50px", justifyContent: "center", alignItems: "center",boxSizing:"border-box", order: 1}}>
                                             {
@@ -81,7 +80,12 @@ const DialogWindow = observer((props: any) => {
                                                 marginLeft: (userId() === message.userSenderId ? "": "5px"),
                                                 textAlign: "justify", whiteSpace: 'normal',wordWrap: 'break-word',
                                                 marginTop: "5px", marginBottom: "5px",maxWidth: "70%",maxHeight: "auto",
-                                                color: (message.createDate ? "black" : "red"), boxSizing:"border-box", borderRadius:"5px", order: (userId() === message.userSenderId? '4': '2')}}
+                                                color: (message.createDate ? "black" : "red"), boxSizing:"border-box",
+                                                borderRadius:"5px", order: (userId() === message.userSenderId? '4': '2')}}
+                                              onClick={action(() => {
+                                                  message.selected ? delete message.selected : message.selected = true
+                                              })}
+
                                         >
                                             <div style={{marginLeft: "10px", marginTop: "2px", marginRight: "10px", fontWeight: '500'}}>
                                                 {message.firstName}
@@ -107,9 +111,24 @@ const DialogWindow = observer((props: any) => {
                                                     <div
                                                         className={"center "+ styles.actions}
                                                         style={{}}>x</div>
-                                                    <div
-                                                        className={"center "+ styles.actions}
-                                                        style={{}}>y</div>
+                                                    {
+                                                        userId() === message.userSenderId &&
+                                                        <div
+                                                            className={"center "+ styles.actions}
+                                                            onClick={() => {
+                                                                if (editableMessage === message.messageId)
+                                                                {
+                                                                    setEditableMessage(false)
+                                                                    setTextMessage('')
+                                                                }
+                                                                else {
+                                                                    setEditableMessage(message.messageId)
+                                                                    setTextMessage(message.text)
+                                                                }
+                                                            }
+                                                            }
+                                                            style={{}}>Ch</div>
+                                                    }
                                                     <div
                                                         className={"center "+ styles.actions}
                                                         style={{}}>z</div>
@@ -117,7 +136,6 @@ const DialogWindow = observer((props: any) => {
                                                 :
                                                 null
                                         }
-
                                     </div>
                                 )}
                             </div>
@@ -131,7 +149,14 @@ const DialogWindow = observer((props: any) => {
             </div>
             {
                 messenger.selectedDialog ?
-                    <MessageInput textMessage={textMessage} setTextMessage={setTextMessage} sendingMessage={sendingMessage}></MessageInput>
+                    <MessageInput
+                        textMessage={textMessage}
+                        setTextMessage={setTextMessage}
+                        sendingMessage={sendingMessage}
+                        editableMessage={editableMessage}
+                        setEditableMessage={setEditableMessage}
+                        editMessage={editMessage}
+                    ></MessageInput>
                     :
                     null
             }

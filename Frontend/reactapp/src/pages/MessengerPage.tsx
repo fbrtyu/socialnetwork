@@ -1,10 +1,11 @@
 import React, { useContext, useEffect, useState} from 'react';
 import { observer } from "mobx-react-lite";
 import { Context } from "../index";
-import {getChatMessages, getChats} from "../http/messengerAPI";
+import {editMessageQ, getChatMessages, getChats} from "../http/messengerAPI";
 import ChatList from "../components/ChatList/ChatList";
 import DialogWindow from "../components/DialogWindow/DialogWindow";
 import {WebsocketContext} from "../utils/WebSocketProvider";
+import {DialogMessage} from "../interfaces/IMessenger";
 
 
 const MessengerPage = observer(() => {
@@ -23,23 +24,36 @@ const MessengerPage = observer(() => {
     const [selectedOwnMessages, setSelectedOnwMessages] = useState<boolean[]>([])
     const [selectedOtherMessages, setSelectedOtherMessages] = useState<boolean[]>([])
     const [searchValue, setSearchValue] = useState<string>('')
+    const [editableMessage, setEditableMessage] = useState<string|null>(null)
+    const [editMode, setEditMode] = useState<boolean>(false)
     const selectMessage = (id: number) => {
         if (userId() === id)
         {
             selectedOwnMessages[id] ? delete selectedOwnMessages[id] : selectedOwnMessages[id] = true
-            console.log(selectedOwnMessages.length)
+            // console.log(selectedOwnMessages.length)
         }
         else
         {
             selectedOtherMessages[id] ? delete selectedOtherMessages[id] : selectedOtherMessages[id] = true
-            console.log(selectedOtherMessages.length)
+            // console.log(selectedOtherMessages.length)
         }
     }
+    const editMessage = (id: string, newText: string) => {
+        textMessage &&
+        editMessageQ(Number(editableMessage), textMessage).then((message) => {
+            messenger.messageUpdate(message)
+            setEditableMessage(null)
+            setTextMessage("")
+            console.log(`новый текст сообщения ${editableMessage}:${textMessage}`)
 
+        })
+
+    }
+    const deleteMessages = (idArray: string[]) => {
+
+    }
     useEffect(() => {
         getChats(userId()).then((data) => { //: {Count: number, Chats: any[]}[]
-                console.log(userId())
-                console.log(data)
             messenger.setDialogs(data.Chats.map((chat: any) => (
                 {
                     dialogId: chat.chatid,
@@ -99,9 +113,6 @@ const MessengerPage = observer(() => {
         if (block)
             block.scrollTop = block.scrollHeight;
     }, [messenger.selectedDialog && messenger.dialogMessages]);
-    function delay(ms: number) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    }
 
     const userId = () => user.user.userId;
     //           text-overflow: ellipsis; /* will make [...] at the end */
@@ -112,6 +123,9 @@ const MessengerPage = observer(() => {
         <div className={"page"}>
             <ChatList setSearchValue={setSearchValue} searchValue={searchValue}/>
             <DialogWindow
+                editableMessage={editableMessage}
+                setEditableMessage={setEditableMessage}
+                editMessage={editMessage}
                 sendingMessage={sendingMessage}
                 textMessage={textMessage}
                 setTextMessage={setTextMessage}

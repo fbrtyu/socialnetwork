@@ -15,13 +15,13 @@ async function editmessage(messageid, newtext) {
         await client.connect();
 
         const query = {
-            text: 'UPDATE message SET text = $1 WHERE id = $2',
-            values: [newtext, messageid],
+            text: 'UPDATE message SET text = $1, updatedate = $3 WHERE id = $2  RETURNING *',
+            values: [newtext, messageid, new Date()],
         };
 
         const res = await client.query(query);
         await client.end();
-        return "Вы изменили сообщение!"
+        return res.rows[0]
 
     } catch (error) {
         console.log(error);

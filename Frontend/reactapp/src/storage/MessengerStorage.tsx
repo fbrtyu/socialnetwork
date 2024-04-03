@@ -1,5 +1,5 @@
 import {makeAutoObservable} from "mobx";
-import {Dialog, DialogMessage, SelectedDialog} from "../interfaces/IMessenger";
+import {Dialog, DialogMessage, Message, SelectedDialog} from "../interfaces/IMessenger";
 
 
 export default class MessengerStorage{
@@ -37,6 +37,25 @@ export default class MessengerStorage{
     setSelectedDialog(selected: SelectedDialog|null){
         this._selectedDialog = selected
         // this._selectedPurpose = selected.id === this._selectedPurpose.id ? {} : {id: selected.id}
+
+    }
+
+    messageUpdate(message: any) {
+        const date: any = [new Date(message.createdate).getDate(), new Date(message.createdate).getMonth() + 1,new Date(message.createdate)
+            .getFullYear()].map(function (x) {
+                return x < 10 ? "0" + x : x
+        }).join(".")
+        if (this._dialogMessages)
+        {
+            for(let index in this._dialogMessages[date])
+            {
+                if ((this._dialogMessages[date][index] as Message).messageId === message.id)
+                {
+                    this._dialogMessages[date][index]["text"] = message.text
+                    this._dialogMessages[date][index]["updateDate"] = message.updatedate
+                }
+            }
+        }
 
     }
 

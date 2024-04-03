@@ -1,14 +1,15 @@
+export  interface Message {
+    messageId: string|null,
+    files: string|null,
+    text: string|null,
+    userSenderId: string,
+    firstName: string,
+    createDate: any|null,
+    updateDate: any|null
+}
+
 export interface DialogMessage {
-    [date: string]: any,
-    message: {
-        messageId: string|null,
-        files: string|null,
-        text: string|null,
-        userSenderId: string,
-        firstName: string,
-        createDate: any|null,
-        updateDate: any|null
-    }[]
+    [date: string]: Message
 }
 
 export interface Dialog {

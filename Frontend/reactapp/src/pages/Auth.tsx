@@ -5,6 +5,9 @@ import {useLocation, useNavigate} from "react-router-dom";
 import {registration, login} from "../http/userAPI";
 import {observer} from "mobx-react-lite";
 import {Context} from "../index";
+import AuthPanel from "../components/AuthPanel/AuthPanel";
+import TopPanel from "../components/TopPanel/TopPanel";
+import NavBar from "../components/NavBar/NavBar";
 
 const Auth = observer(() => {
     const {user} = useContext(Context)
@@ -16,7 +19,6 @@ const Auth = observer(() => {
     const [password, setPassword] = useState('')
     const [passwordCheck, setPasswordCheck] = useState('')
     const [error, setError] = useState('')
-
 
     const accept = async () => {
         try {
@@ -46,76 +48,22 @@ const Auth = observer(() => {
         }
     }
     return (
-        <div
-
-            style={{display: "flex", justifyContent: "center", alignItems: "center", height: "100%"}}
+        <div className={"page center"}
+            // style={{display: "flex", justifyContent: "center", alignItems: "center", height: "100%"}}
         >
-            <div style={{display: "flex", flexDirection: "column", width: 500, height: 400, background: "#ffffff", borderRadius: "5%",  justifyContent: "center", alignItems: "center",
-                boxSizing: "border-box",
-                paddingBottom: "20px"}}>
-                <h2 className="m-auto">{isLogin ? 'Вход' : 'Регистрация'}</h2>
-                    <input
-                        type={"text"}
-                        style={{marginBottom:"5px"}}
-                        placeholder="Email"
-                        value={email}
-                        onChange={e => setEmail(e.target.value)}
-                    />
-                    {isLogin ?
-                        <div></div>
-                        :
-                        <input
-                            type={"text"}
-                            style={{marginBottom:"5px"}}
-                            placeholder="Имя"
-                            value={name}
-                            required
-                            onChange={e => setName(e.target.value)}
-                        />
-                    }
-                    <input
-                        placeholder="Пароль"
-                        style={{marginBottom:"5px"}}
-                        value={password}
-                        type={"password"}
-                        required
-                        onChange={e => setPassword(e.target.value)}
-                    />
-                    {isLogin ?
-                        null
-                        :
-                        <input
-                            placeholder="Повторите пароль"
-                            style={{marginBottom:"5px"}}
-                            value={passwordCheck}
-                            type={"password"}
-                            onChange={e => setPasswordCheck(e.target.value)}
-                        />
-
-                    }
-                            <div style={{marginBottom:"10px"}}>
-                                {isLogin ?
-                                    <div className={"textHover"} style={{cursor: "pointer"}} onClick={() => navigate(REGISTRATION_ROUTE)}>Регистрация</div>
-                                    :
-                                    <div className={"textHover"} style={{cursor: "pointer"}} onClick={() => navigate(LOGIN_ROUTE)}>Есть аккаунт? Войдите</div>
-                                }
-                            </div>
-                    <input
-                        type = {"submit"}
-                        onClick={() => accept()}
-                        className={"button hover"}
-                        value={isLogin ? 'Вход' : 'Регистрация'}
-                        style={{marginBottom:"10px"}}
-                    >
-                    </input>
-                {
-                    error?
-                        <div style={{color: "red"}}>{error}</div>
-                        :
-                        null
-                }
-            </div>
-
+            <AuthPanel
+                setName={setName}
+                setEmail={setEmail}
+                name={name}
+                email={email}
+                error={error}
+                isLogin={isLogin}
+                setPassword={setPassword}
+                setPasswordCheck={setPasswordCheck}
+                password={password}
+                passwordCheck={passwordCheck}
+                accept={accept}
+            ></AuthPanel>
         </div>
     );
 });

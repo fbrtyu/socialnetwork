@@ -13,8 +13,14 @@ export const getChats = async (userId: any)=> {
     return await response.json();
 }
 
-export const deleteMessages = async  (messagesId: [])=> {
-    const {data} = await $host.delete('api/messenger/delete', {data: {messagesId: messagesId}})
-    if (data.error) return data
-    return await data.json()
+export const editMessageQ = async (messageId: number, text: string)=> {
+    const {data} = await $host.patch('editmessage', {messageid: messageId, newtext: text})
+    console.log(data)
+/*    if (data.error) return data*/
+    return data;
 }
+// export const deleteMessages = async  (messagesId: [])=> {
+//     const {data} = await $host.delete('api/messenger/delete', {body: {messagesId: messagesId}})
+//     if (data.error) return data
+//     return await data.json()
+// }
